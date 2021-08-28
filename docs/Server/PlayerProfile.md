@@ -140,8 +140,11 @@ end)
 
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
-| `physicsThreshold : string` | A value which can be either `VerticalSpeed` or `HorizontalSpeed` (if the detections for them are enabled) |
+| `physicsThreshold : string` | A value which can be either `VerticalSpeed` or `HorizontalSpeed`  |
 | `thresholdIncrement : number` | The value to increment the threshold by |
+
+!!!warning
+    This method will throw an error if the detection it self for `physicsThreshold` doesn't exist or isn't enabled.
 
 ### `PlayerProfile:DecrementPhysicsThreshold()`
 
@@ -155,6 +158,9 @@ Decrements the threshold for `physicsThreshold` by `thresholdDecrement`.
 | ----------- | ------------------------------------ |
 | `physicsThreshold : string` | A value which can be either `VerticalSpeed` or `HorizontalSpeed` (if the detections for them are enabled) |
 | `thresholdIncrement : number` | The value to decrement the threshold by |
+
+!!!warning
+    This method will throw an error if the detection it self for `physicsThreshold` doesn't exist or isn't enabled.
 
 !!!note
     If decrementing physics threshold values such that they are to be a value <= `0`, they will be clamped to `0`.
@@ -180,6 +186,8 @@ Returns the threshold increment for `physicsThreshold`.
 | ----------- | ------------------------------------ |
 | `physicsThreshold : string` | A value which can be either `VerticalSpeed` or `HorizontalSpeed` (if the detections for them are enabled) |
 
+!!!note
+    This method will return `nil` if the detection for `physicsThreshold` doesn't exist or isn't enabled.
 
 ### `PlayerProfile:GetCurrentActivePhysicsDetectionFlag()`
 
