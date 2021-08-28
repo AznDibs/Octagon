@@ -540,6 +540,13 @@
 
 <span class="n">Players</span><span class="p">.</span><span class="n">PlayerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="n">PlayerAdded</span><span class="p">)</span>
 </code></pre></div>
+<p>Okay, let's do it the more simpler way:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">ReplicatedStorage</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">)</span>
+
+<span class="kd">local</span> <span class="n">Octagon</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ReplicatedStorage</span><span class="p">.</span><span class="n">Octagon</span><span class="p">)</span>
+
+<span class="n">Octagon</span><span class="p">.</span><span class="n">Start</span><span class="p">()</span>
+</code></pre></div>
 <p>Additionally, here is a very basic client side code (should be parented to <a href="https://developer.roblox.com/en-us/api-reference/class/StarterPlayerScripts">StarterPlayerScripts</a>) which starts up Octagon on the client side. For clarification, it will monitor the player's humanoid state and stops them from bouncing high up when they fall to the ground (to prevent false positive) and resets their velocity when flinged (to prevent false positive).</p>
 <div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">ReplicatedStorage</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">)</span>
 
