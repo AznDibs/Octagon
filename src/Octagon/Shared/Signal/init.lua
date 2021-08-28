@@ -33,10 +33,6 @@ local LocalConstants = {
 	AlwaysAvailableMethods = {
 		"IsDestroyed",
 	},
-
-	AlwaysAvailableMembers = {
-		"_isDestroyed",
-	},
 }
 
 function Signal.IsSignal(self)
@@ -173,7 +169,7 @@ function Signal:Fire(...)
 
 	for index = connectionsLength, 1, -1 do
 		local connection = self.Connections[index]
-         
+
 		if not connection or not connection:IsConnected() then
 			continue
 		end

@@ -33,10 +33,6 @@ local LocalConstants = {
 	AlwaysAvailableMethods = {
 		"IsDestroyed",
 	},
-
-	AlwaysAvailableMembers = {
-		"_isDestroyed",
-	},
 }
 
 function Signal.IsSignal(self)
