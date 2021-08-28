@@ -2,6 +2,14 @@
 
 A player profile in layman's terms, is simply a table which contains necessary data for Octagon and the developer to work with. 
 
+!!!warning
+    When a player's profile is destroyed internally, i.e whenever they leave the game, most of the members will be not accessible and only some methods will be calleable on the profile.
+
+    Here is the list of the methods / members safe to access even if the profile is destroyed:
+
+    - [PlayerProfile.PhysicsDetectionFlagCount](https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofilephysicsdetectionflagcount)
+    - [PlayerProfile:IsDestroyed()](https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileisdestroyed)
+
 !!!note
     To retrieve a player profile, only use [PlayerProfileService.GetPlayerProfile()](https://silentsreplacement.github.io/Octagon/Server/PlayerProfileService/#playerprofileservicegetplayerprofile).
 
