@@ -2,8 +2,6 @@
 
 Octagon is a fully fledged modular server sided anti exploit designed to detect many exploits reliably without interrupting user experience.
 
-**Documentation:** [Documentation](https://silentsreplacement.github.io/Octagon/)
-
 ---
 
 ## Supported detections
