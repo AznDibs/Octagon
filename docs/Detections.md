@@ -39,6 +39,7 @@ This detection works exactly like the above one, but for high vertical speed.
     HorizontalSpeed.LeewayMultiplier : number
     HorizontalSpeed.Enabled : boolean
 
+	HorizontalSpeed.Cleanup() --> nil []
 	HorizontalSpeed.Init() --> nil []
     HorizontalSpeed.Start(
         detectionData : table
@@ -54,6 +55,7 @@ local HorizontalSpeed = {
 	LeewayMultiplier = 1.3,
 	Enabled = true,
 }
+
 ...
 ```
 
@@ -145,13 +147,12 @@ This detection by default, tracks the primary part (HumanoidRootPart) of the pla
     
 	MultiToolEquip.Init() --> nil []
     MultiToolEquip.Start(playerProfile : PlayerProfile) --> nil []
-    MultiToolEquip.Stop() --> nil []
+    MultiToolEquip.Cleanup() --> nil []
 ]]
 
 local MultiToolEquip = {
 	Enabled = true,
 }
-
 ...
 ```
 
