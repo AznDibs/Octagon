@@ -36,6 +36,16 @@ end
 Players.PlayerAdded:Connect(PlayerAdded)
 ```
 
+Okay, let's do it the more simpler way:
+
+```lua
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Octagon = require(ReplicatedStorage.Octagon)
+ 
+Octagon.Start()
+```
+
 Additionally, here is a very basic client side code (should be parented to [StarterPlayerScripts](https://developer.roblox.com/en-us/api-reference/class/StarterPlayerScripts)) which starts up Octagon on the client side. For clarification, it will monitor the player's humanoid state and stops them from bouncing high up when they fall to the ground (to prevent false positive) and resets their velocity when flinged (to prevent false positive).
 
 ```lua
