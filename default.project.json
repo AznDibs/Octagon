@@ -1,0 +1,15 @@
+{
+  "name": "Octagon",
+
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      
+      "Octagon": {
+        "$path": "src/Octagon"
+      }
+    }
+  }
+}                

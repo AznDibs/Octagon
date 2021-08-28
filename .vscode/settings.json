@@ -1,0 +1,7 @@
+{
+    "Lua.diagnostics.disable": [
+        "redefined-local",
+        "incorrect-call-arguments",
+        "redundant-parameter"
+    ]
+}

@@ -1,0 +1,40 @@
+site_name: Octagon
+site_url: https://example.com/
+
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - attr_list
+  - pymdownx.highlight
+
+repo_url: https://github.com/SilentsReplacement/Octagon
+repo_name: Octagon
+
+theme:
+  name: material
+  palette:
+    scheme: default
+    primary: deep purple
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Tutorial: 
+        - Setting up: Settingup.md
+        - Basic usage: Basicusage.md
+        - Blacklisting players from being monitored: Blacklistingplayersfrombeingmonitored.md
+        - Detections: Detections.md
+        - Trouble shooting: Troubleshooting.md
+  - Server: 
+    - API:  Server/API.md
+    - Modules:
+        - PlayerProfileService: Server/PlayerProfileService.md
+        - PlayerProfile: Server/PlayerProfile.md
+
+  - Shared:
+    - Util: Shared/Util.md
+
+  - Client:
+    - API: Client/API.md
+
