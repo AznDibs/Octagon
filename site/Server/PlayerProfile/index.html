@@ -911,7 +911,7 @@
 <tbody>
 <tr>
 <td><code>physicsThreshold : string</code></td>
-<td>A value which can be either <code>VerticalSpeed</code> or <code>HorizontalSpeed</code> (if the detections for them are enabled)</td>
+<td>A value which can be either <code>VerticalSpeed</code> or <code>HorizontalSpeed</code></td>
 </tr>
 <tr>
 <td><code>thresholdIncrement : number</code></td>
@@ -919,6 +919,10 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method will throw an error if the detection it self for <code>physicsThreshold</code> doesn't exist or isn't enabled.</p>
+</div>
 <h3 id="playerprofiledecrementphysicsthreshold"><code>PlayerProfile:DecrementPhysicsThreshold()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">DecrementPhysicsThreshold</span><span class="p">(</span><span class="n">physicsThreshold</span> <span class="p">:</span> <span class="n">string</span><span class="p">,</span> <span class="n">thresholdDecrement</span> <span class="p">:</span> <span class="n">number</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
 </code></pre></div>
@@ -941,6 +945,10 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method will throw an error if the detection it self for <code>physicsThreshold</code> doesn't exist or isn't enabled.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If decrementing physics threshold values such that they are to be a value &lt;= <code>0</code>, they will be clamped to <code>0</code>.</p>
@@ -970,6 +978,10 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method will return <code>nil</code> if the detection for <code>physicsThreshold</code> doesn't exist or isn't enabled.</p>
+</div>
 <h3 id="playerprofilegetcurrentactivephysicsdetectionflag"><code>PlayerProfile:GetCurrentActivePhysicsDetectionFlag()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">GetCurrentActivePhysicsDetectionFlag</span><span class="p">()</span> <span class="c1">--&gt; string | nil [physicsDetectionFlag]</span>
 </code></pre></div>
