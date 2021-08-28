@@ -47,6 +47,8 @@ Here are some concluded benchmarks against other anti exploits:
 
 ![Placeholder](https://raw.githubusercontent.com/SilentsReplacement/Octagon/main/docs/Images/Benchmark.png)
 
+##### Open the image in a new tab to view it in a clear way
+
 ---
 
 ## Why use Octagon over anti exploits?

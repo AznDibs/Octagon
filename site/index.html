@@ -12,7 +12,7 @@
         <link rel="canonical" href="https://example.com/">
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.10">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.5">
     
     
       
@@ -20,10 +20,10 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.1fe995fd.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.be71726b.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.f1a3b89f.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.3f5d1f46.min.css">
         
           
           
@@ -114,14 +114,18 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
       </label>
-      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-      </button>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
@@ -260,6 +264,13 @@
           <li class="md-nav__item">
   <a href="#flexiblity-and-scalability" class="md-nav__link">
     Flexiblity and scalability
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    Performance
   </a>
   
 </li>
@@ -605,6 +616,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    Performance
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -652,7 +670,7 @@
 </ul>
 <hr />
 <h2 id="how-effective-is-it-at-stopping-exploits-and-how-performance-friendly-is-it">How effective is it at stopping exploits and how performance friendly is it?</h2>
-<p>Firstly, Octagon already comes with preinstalled physics and non physics detections. By using a <strong>single</strong> <a href="https://developer.roblox.com/en-us/api-reference/event/RunService/Heartbeat">Heartbeat</a> event to monitor all players in the game, it is performance friendly and uses something which I call physics cache (which caches physics computation value for later reuse).</p>
+<p>Firstly, Octagon already comes with preinstalled physics and non physics detections. </p>
 <p>If Octagon sees the player movement being invalid ( high vertical or horizontal speed or no clip (if enabled) ), then the player will be safely teleported to their last position and their network ownership temporarily taken away from them which temporarily results in a jerky movement but makes it near-impossible for the player to perform physics exploit. It is also safe to say that each exploit detection is <strong>extremely battle tested</strong> and are very reliable.</p>
 <p>Note that Octagon <em>never</em> relies on any information from the client, it already performs physics checks rather than checking client sided computated values like <a href="https://developer.roblox.com/en-us/api-reference/property/Humanoid/FloorMaterial">Humaniod.FloorMaterial</a> or <a href="https://developer.roblox.com/en-us/api-reference/enum/HumanoidStateType">Humanoid StateTypes</a> which can be easily spoofed by the client.</p>
 <h3 id="false-positives">False positives</h3>
@@ -660,6 +678,10 @@
 <h3 id="flexiblity-and-scalability">Flexiblity and scalability</h3>
 <p>Octagon is extremely flexible, and you can easily adjust it to easily suit your own game's need without any headaches. Octagon already comes with group configuration support and manual player black listing from being monitored. Heck, it even allows you to toggle current detections and even create new ones (not currently documented yet).</p>
 <p>As a bonus, one of the best features of Octagon is that it respects serverside changes. Meaning that changing walk speed, teleporting the player or any property that impacts physics / non physics on the server for a specific player, will cause <strong>no issues</strong> and Octagon will not falsely detect the player!</p>
+<h3 id="performance">Performance</h3>
+<p>By using a <strong>single</strong> <a href="https://developer.roblox.com/en-us/api-reference/event/RunService/Heartbeat">Heartbeat</a> event to monitor all players in the game, it is performance friendly and uses something which I call physics cache (which caches physics computation value for later reuse).</p>
+<p>Here are some concluded benchmarks against other anti exploits:</p>
+<p><img alt="Placeholder" src="https://raw.githubusercontent.com/SilentsReplacement/Octagon/main/docs/Images/Benchmark.png" /></p>
 <hr />
 <h2 id="why-use-octagon-over-anti-exploits">Why use Octagon over anti exploits?</h2>
 <ul>
@@ -734,10 +756,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      <script src="assets/javascripts/bundle.56a63758.min.js"></script>
       
     
   </body>
