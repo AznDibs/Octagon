@@ -64,7 +64,7 @@ By using a **single** [Heartbeat](https://developer.roblox.com/en-us/api-referen
 
 Here are some concluded benchmarks against other anti exploits:
 
-![Benchmark|690x304, 100%](upload://x2xnJSbwX4zskW6ebcqh0ALmBs1.png)
+![image](https://user-images.githubusercontent.com/71311544/131211198-30fb0406-44fe-4341-b526-559b97d52af1.png)
 
 ---
 
