@@ -290,17 +290,6 @@ function Server.Start()
 			end)
 
 			local function CharacterAdded(character)
-				-- Handle rare edge case where the player's temporarily black list has ended
-				-- and there are no players in the game, therefore the heartbeat event will be
-				-- disconnected and MAY not be reconnected back if the player had no body parts
-				-- by the time their temporary monitor black list ended:
-				if
-					Server._heartBeatScriptConnection
-					and not Server._heartBeatScriptConnection.Connected
-				then
-					Server._heartBeatScriptConnection = Server._startHeartBeatUpdate()
-				end
-
 				playerProfile.DetectionMaid:Cleanup()
 				Server._startNonPhysicsDetections(playerProfile)
 
