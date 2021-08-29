@@ -31,7 +31,7 @@ local Util = require(Octagon.Shared.Util)
 local SharedConstants = require(Octagon.Shared.SharedConstants)
 local Signal = require(Octagon.Shared.Signal)
 local Maid = require(Octagon.Shared.Maid)
-local InitMaidForSignals = require(Octagon.Shared.InitMaidForSignals)
+local InitMaidFor = require(Octagon.Shared.InitMaidFor)
 local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
 
 VerticalSpeed._maid = Maid.new()
@@ -83,7 +83,7 @@ function VerticalSpeed._calculateVerticalSpeed(currentPosition, lastPosition, dt
 end
 
 function VerticalSpeed._initSignals()
-	InitMaidForSignals(VerticalSpeed, VerticalSpeed._maid)
+	InitMaidFor(VerticalSpeed, VerticalSpeed._maid, Signal.IsSignal)
 	
 	VerticalSpeed._onPlayerDetection:Connect(function(playerProfile, lastCFrame)
 		local player = playerProfile.Player
