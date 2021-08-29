@@ -38,7 +38,8 @@ local Signal = require(Octagon.Shared.Signal)
 local Maid = require(Octagon.Shared.Maid)
 local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
 local ClearReferenceTypes = require(Octagon.ClearReferenceTypes)
-local InitMaidForSignals = require(Octagon.Shared.InitMaidForSignals)
+local InitMaidFor = require(Octagon.Shared.InitMaidFor)
+local NoClip = require(Octagon.Detections.Physics.NoClip)
 local PlayerProfileService = require(script.Parent)
 
 local LocalConstants = {
@@ -99,7 +100,7 @@ function PlayerProfile.new(player)
 		_physicsThresholdIncrements = {},
 	}, PlayerProfile)
 
-	InitMaidForSignals(self, self.Maid)
+	InitMaidFor(self, self.Maid, Signal.IsSignal)
 
 	PlayerProfileService.OnPlayerProfileLoaded:Fire(self)
 
@@ -254,7 +255,7 @@ function PlayerProfile:_initPhysicsDetectionData(physicsDetections)
 		}
 
 		-- Setup ray cast params for no clip detection:
-		if detectionName == "NoClip" then
+		if detection == NoClip then
 			local rayCastParams = RaycastParams.new()
 			rayCastParams.FilterDescendantsInstances = { self.Player.Character }
 			rayCastParams.IgnoreWater = true
