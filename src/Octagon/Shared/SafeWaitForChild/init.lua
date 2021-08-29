@@ -23,17 +23,17 @@ return function(instance, childName, timeOut)
 	maid:AddTask(signal)
 
 	maid:AddTask(instance:GetPropertyChangedSignal("Parent"):Connect(function(_, parent)
-		if not parent then
+		if not parent and not signal:IsDestroyed() then
 			signal:Fire(nil)
 		end
 	end))
 
 	maid:AddTask(instance.ChildAdded:Connect(function(child)
-		if child.Name == childName then
+		if child.Name == childName and not signal:IsDestroyed() then
 			signal:Fire(child)
 		end
 	end))
-
+ 
 	task.spawn(function()
 		task.wait(timeOut or LocalConstants.DefaultTimeout)
 		if not signal:IsDestroyed() then
