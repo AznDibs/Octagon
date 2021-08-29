@@ -76,7 +76,7 @@ function PlayerProfile.new(player)
 		typeof(player) == "Instance" and player:IsA("Player"),
 		LocalConstants.ErrorMessages.InvalidArgument:format(
 			1,
-			"PlayerProfile.new",
+			"PlayerProfile.new()",
 			"player",
 			typeof(player)
 		)
