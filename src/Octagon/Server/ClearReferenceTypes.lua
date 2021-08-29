@@ -10,18 +10,21 @@ local LocalConstants = {
 	ReferenceTypes = {
 		"table",
 		"Instance",
-		"string",
 		"thread",
 		"function",
 	},
+
+	DefaultKeyIgnoreList = {},
 }
 
-return function(tabl)
-	-- Set only reference type keys/values to nil:
+return function(tabl, keyIgnoreList)
+	keyIgnoreList = keyIgnoreList or LocalConstants.DefaultKeyIgnoreList
+
 	for key, value in pairs(tabl) do
 		if
-			table.find(LocalConstants.ReferenceTypes, typeof(key))
-			and not table.find(LocalConstants.ReferenceTypes, typeof(value))
+			not table.find(LocalConstants.ReferenceTypes, typeof(key))
+				and not table.find(LocalConstants.ReferenceTypes, typeof(value))
+			or table.find(keyIgnoreList, key)
 		then
 			continue
 		end
@@ -29,5 +32,5 @@ return function(tabl)
 		tabl[key] = nil
 	end
 
-    return nil
+	return nil
 end
