@@ -18,7 +18,7 @@ local Octagon = require(script:FindFirstAncestor("Octagon"))
 local Util = require(Octagon.Shared.Util)
 local Signal = require(Octagon.Shared.Signal)
 local Maid = require(Octagon.Shared.Maid)
-local InitMaidForSignals = require(Octagon.Shared.InitMaidForSignals)
+local InitMaidFor = require(Octagon.Shared.InitMaidFor)
 local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
 
 local LocalConstants = { MaxEquippedToolCount = 1 }
@@ -78,13 +78,13 @@ function MultiToolEquip.Start(playerProfile)
 end
 
 function MultiToolEquip.Cleanup()
-	MultiToolEquip._maid:Destroy()
+	DestroyAllMaids(MultiToolEquip)
 
 	return nil
 end
 
 function MultiToolEquip._initSignals()
-	InitMaidForSignals(MultiToolEquip, MultiToolEquip._maid)
+	InitMaidFor(MultiToolEquip, MultiToolEquip._maid, Signal.IsSignal)
 
 	MultiToolEquip._onPlayerDetection:Connect(function(playerProfile)
 		local player = playerProfile.Player

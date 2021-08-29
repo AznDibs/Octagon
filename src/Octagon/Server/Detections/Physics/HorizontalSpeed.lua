@@ -31,6 +31,8 @@ local Util = require(Octagon.Shared.Util)
 local SharedConstants = require(Octagon.Shared.SharedConstants)
 local Signal = require(Octagon.Shared.Signal)
 local Maid = require(Octagon.Shared.Maid)
+local InitMaidFor = require(Octagon.Shared.InitMaidFor)
+local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
 
 HorizontalSpeed._onPlayerDetection = Signal.new()
 HorizontalSpeed._maid = Maid.new()
@@ -53,7 +55,7 @@ function HorizontalSpeed.Start(detectionData, playerProfile, dt)
 end
 
 function HorizontalSpeed.Cleanup()
-	HorizontalSpeed._maid:Destroy()
+	DestroyAllMaids(HorizontalSpeed)
 
 	return nil
 end
@@ -74,27 +76,24 @@ function HorizontalSpeed._calculateAverageSpeed(currentPosition, lastPosition, d
 end
 
 function HorizontalSpeed._initSignals()
-	HorizontalSpeed._maid:AddTask(
-		HorizontalSpeed._onPlayerDetection:Connect(function(playerProfile, lastCFrame)
-			local player = playerProfile.Player
-			local primaryPart = player.Character.PrimaryPart
+	InitMaidFor(HorizontalSpeed, HorizontalSpeed._maid, Signal.IsSignal)
+	
+	HorizontalSpeed._onPlayerDetection:Connect(function(playerProfile, lastCFrame)
+		local player = playerProfile.Player
+		local primaryPart = player.Character.PrimaryPart
 
-			playerProfile:RegisterPhysicsDetectionFlag(
-				"HorizontalSpeed",
-				"HighHorizontalSpeed"
-			)
+		playerProfile:RegisterPhysicsDetectionFlag("HorizontalSpeed", "HighHorizontalSpeed")
 
-			-- Zero out the player's velocity on the XZ axis to have them immediately
-			-- stop moving:
-			primaryPart.AssemblyLinearVelocity *= SharedConstants.Vectors.Y
-			primaryPart.CFrame = lastCFrame
+		-- Zero out the player's velocity on the XZ axis to have them immediately
+		-- stop moving:
+		primaryPart.AssemblyLinearVelocity *= SharedConstants.Vectors.Y
+		primaryPart.CFrame = lastCFrame
 
-			-- Temporarily have the server handle physics
-			-- for the player, which means the player can't do
-			-- any physics exploits but results in jerky movement
-			Util.SetBasePartNetworkOwner(primaryPart, nil)
-		end)
-	)
+		-- Temporarily have the server handle physics
+		-- for the player, which means the player can't do
+		-- any physics exploits but results in jerky movement
+		Util.SetBasePartNetworkOwner(primaryPart, nil)
+	end)
 
 	return nil
 end

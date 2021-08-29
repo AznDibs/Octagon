@@ -21,7 +21,7 @@ local SharedConstants = require(Octagon.Shared.SharedConstants)
 local Util = require(Octagon.Shared.Util)
 local Signal = require(Octagon.Shared.Signal)
 local Maid = require(Octagon.Shared.Maid)
-local InitMaidForSignals = require(Octagon.Shared.InitMaidForSignals)
+local InitMaidFor = require(Octagon.Shared.InitMaidFor)
 local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
 
 PrimaryPartDeletion._onPlayerDetection = Signal.new()
@@ -65,7 +65,7 @@ function PrimaryPartDeletion.Cleanup()
 end
 
 function PrimaryPartDeletion._initSignals()
-	InitMaidForSignals(PrimaryPartDeletion, PrimaryPartDeletion._maid)
+	InitMaidFor(PrimaryPartDeletion, PrimaryPartDeletion._maid, Signal.IsSignal)
 
 	PrimaryPartDeletion._onPlayerDetection:Connect(function(playerProfile)
 		playerProfile.Player:LoadCharacter()
