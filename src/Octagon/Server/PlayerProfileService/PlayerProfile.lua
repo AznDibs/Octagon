@@ -39,7 +39,6 @@ local Maid = require(Octagon.Shared.Maid)
 local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
 local ClearReferenceTypes = require(Octagon.ClearReferenceTypes)
 local InitMaidFor = require(Octagon.Shared.InitMaidFor)
-local NoClip = require(Octagon.Detections.Physics.NoClip)
 local PlayerProfileService = require(script.Parent)
 
 local LocalConstants = {
@@ -73,7 +72,15 @@ function PlayerProfile.IsPlayerProfile(self)
 end
 
 function PlayerProfile.new(player)
-	local PlayerProfileService = require(script.Parent)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"PlayerProfile.new",
+			"player",
+			typeof(player)
+		)
+	)
 
 	assert(
 		not PlayerProfileService.LoadedPlayerProfiles[player],
@@ -101,7 +108,7 @@ function PlayerProfile.new(player)
 	}, PlayerProfile)
 
 	InitMaidFor(self, self.Maid, Signal.IsSignal)
-
+	PlayerProfileService.LoadedPlayerProfiles[player] = self
 	PlayerProfileService.OnPlayerProfileLoaded:Fire(self)
 
 	return self
@@ -154,7 +161,6 @@ function PlayerProfile:Init(physicsDetections)
 
 	self._isInit = true
 	PlayerProfileService.OnPlayerProfileInit:Fire(self)
-
 	self.OnInit:Fire()
 
 	return nil
@@ -255,7 +261,7 @@ function PlayerProfile:_initPhysicsDetectionData(physicsDetections)
 		}
 
 		-- Setup ray cast params for no clip detection:
-		if detection == NoClip then
+		if detectionName == "NoClip" then
 			local rayCastParams = RaycastParams.new()
 			rayCastParams.FilterDescendantsInstances = { self.Player.Character }
 			rayCastParams.IgnoreWater = true
@@ -275,8 +281,6 @@ function PlayerProfile:_initPhysicsDetectionData(physicsDetections)
 		}
 	end
 
-	PlayerProfileService.LoadedPlayerProfiles[self.Player] = self
-
 	return nil
 end
 
@@ -295,7 +299,7 @@ function PlayerProfile:_initPhysicsThresholds(physicsDetections)
 	local humanoid = player.Character.Humanoid
 	local primaryPart = player.Character.PrimaryPart
 
-	if next(physicsDetections) ~= nil then
+	if next(physicsDetections) then
 		for detectionName, _ in pairs(physicsDetections) do
 			self._physicsThresholdIncrements[detectionName] = self._physicsThresholdIncrements[detectionName]
 				or 0
