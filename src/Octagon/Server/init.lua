@@ -406,7 +406,7 @@ function Server._initSignals()
 		then
 			return nil
 		end
-
+  
 		Server._heartBeatScriptConnection = Server._startHeartBeatUpdate()
 	end)
 
@@ -414,14 +414,14 @@ function Server._initSignals()
 		Server.MonitoringPlayerProfiles[player] = nil
 
 		if
-			Server.AreMonitoringPlayerProfilesLeft()
-			and Server._heartBeatScriptConnection
-			and Server._heartBeatScriptConnection.Connected
+			not Server.AreMonitoringPlayerProfilesLeft()
 		then
 			return nil
 		end
 
-		Server._heartBeatScriptConnection:Disconnect()
+		if Server._heartBeatScriptConnection and Server._heartBeatScriptConnection.Connected then
+			Server._heartBeatScriptConnection:Disconnect()
+		end
 	end)
 
 	if PlayerProfileService.ArePlayerProfilesLoaded() then
@@ -578,11 +578,14 @@ end
 function Server._initModules()
 	Server._areModulesInit = true
 
-	Server.Shared = script.Parent.Shared
-	Server.Client = script.Parent.Client
-
 	for _, child in ipairs(script:GetChildren()) do
 		Server[child.Name] = child
+	end
+	         
+	for _, child in ipairs(script.Parent:GetChildren()) do
+		if child.Name ~= "Server" then
+			Server[child.Name] = child
+		end
 	end
 
 	return nil
