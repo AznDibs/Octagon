@@ -34,7 +34,7 @@ local Util = require(Octagon.Shared.Util)
 local SharedConstants = require(Octagon.Shared.SharedConstants)
 local Signal = require(Octagon.Shared.Signal)
 local Maid = require(Octagon.Shared.Maid)
-local InitMaidForSignals = require(Octagon.Shared.InitMaidForSignals)
+local InitMaidFor = require(Octagon.Shared.InitMaidFor)
 local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
 
 NoClip._maid = Maid.new()
@@ -112,7 +112,7 @@ function NoClip._isNoClipping(player, physicsData)
 end
 
 function NoClip._initSignals()
-	InitMaidForSignals(NoClip, NoClip._maid)
+	InitMaidFor(NoClip, NoClip._maid, Signal.IsSignal)
 	
 	NoClip._onPlayerDetection:Connect(function(playerProfile, lastCFrame)
 		local primaryPart = playerProfile.Player.Character.PrimaryPart
