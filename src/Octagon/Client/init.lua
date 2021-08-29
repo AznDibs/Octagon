@@ -24,7 +24,7 @@ local SharedConstants = require(script:FindFirstAncestor("Octagon").Shared.Share
 local Signal = require(script:FindFirstAncestor("Octagon").Shared.Signal)
 local SafeWaitForChild = require(script:FindFirstAncestor("Octagon").Shared.SafeWaitForChild)
 local Maid = require(script:FindFirstAncestor("Octagon").Shared.Maid)
-local InitMaidForSignals = require(script.Parent.Shared.InitMaidForSignals)
+local InitMaidFor = require(script.Parent.Shared.InitMaidFor)
 local DestroyAllMaids = require(script.Parent.Shared.DestroyAllMaids)
 
 local LocalConstants = { MinPlayerHardGroundLandYVelocity = 145 }
@@ -125,9 +125,9 @@ function Client._initModules()
 
 	return nil
 end
-
+    
 function Client._initSignals()
-	InitMaidForSignals(Client._maid)
+	InitMaidFor(Client, Client._maid, Signal.IsSignal)
 
 	Client.OnPlayerFling:Connect(function()
 		-- Zero out their velocity to prevent them from flinging:

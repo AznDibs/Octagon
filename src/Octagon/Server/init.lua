@@ -49,7 +49,7 @@ local RetryPcall = require(script.Parent.Shared.RetryPcall)
 local Config = require(script.Config)
 local SharedConstants = require(script.Parent.Shared.SharedConstants)
 local DestroyAllMaids = require(script.Parent.Shared.DestroyAllMaids)
-local InitMaidForSignals = require(script.Parent.Shared.InitMaidForSignals)
+local InitMaidFor = require(script.Parent.Shared.InitMaidFor)
 local Util = require(script.Parent.Shared.Util)
 
 local LocalConstants = {
@@ -391,7 +391,7 @@ function Server._initSignals()
 		return nil
 	end
 
-	InitMaidForSignals(Server._maid)
+	InitMaidFor(Server, Server._maid, Signal.IsSignal)
 
 	-- Track newly loaded player profiles and start
 	-- heartbeat update ONLY if a new player profile is loaded, This is to prevent
