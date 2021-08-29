@@ -33,6 +33,9 @@ local LocalConstants = {
 	AlwaysAvailableMethods = {
 		"IsDestroyed",
 	},
+	ErrorMessages = {
+		InvalidArgument = "Invalid argument#%d to %s: expected %s, got %s",
+	},
 }
 
 function Signal.IsSignal(self)
@@ -49,6 +52,16 @@ function Signal.new()
 end
 
 function Signal:Connect(callBack)
+	assert(
+		typeof(callBack) == "function",
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Signal:Connect",
+			"function",
+			typeof(callBack)
+		)
+	)
+
 	local connection = Connection.new(self, callBack)
 	table.insert(self.Connections, connection)
 

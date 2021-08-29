@@ -43,6 +43,10 @@ local LocalConstants = {
 		"thread",
 		"function",
 	},
+
+	ErrorMessages = {
+		InvalidArgument = "Invalid argument#%d to %s: expected %s, got %s",
+	},
 }
 
 function Maid.new()
@@ -58,6 +62,18 @@ function Maid.IsMaid(self)
 end
 
 function Maid:AddTask(task, customCleanupMethod, identifier)
+	assert(
+		typeof(task) == "function"
+			or typeof(task) == "RBXScriptConnection"
+			or typeof(task) == "table",
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Maid.new()",
+			"function or RBXScriptConnection or table",
+			typeof(task)
+		)
+	)
+
 	if typeof(task) == "table" then
 		task = {
 			Task = task,
@@ -72,6 +88,18 @@ function Maid:AddTask(task, customCleanupMethod, identifier)
 end
 
 function Maid:RemoveTask(task)
+	assert(
+		typeof(task) == "function"
+			or typeof(task) == "RBXScriptConnection"
+			or typeof(task) == "table",
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Maid:RemoveTask()",
+			"function or RBXScriptConnection or table",
+			typeof(task)
+		)
+	)
+
 	self._tasks[task] = nil
 
 	return nil
