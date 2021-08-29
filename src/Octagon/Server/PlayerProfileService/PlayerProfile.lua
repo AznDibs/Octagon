@@ -50,7 +50,7 @@ local LocalConstants = {
 	MaxPhysicsThresholdIncrement = math.huge,
 
 	ErrorMessages = {
-		InvalidArgument = "Invalid argument#%d to %s, expected %s, got %s",
+		InvalidArgument = "Invalid argument#%d to %s: expected %s, got %s",
 	},
 
 	ReferenceTypes = {
