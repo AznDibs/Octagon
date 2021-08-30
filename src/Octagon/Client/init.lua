@@ -118,12 +118,15 @@ end
 function Client._initModules()
 	Client._areModulesInit = true
 
+	script.Parent.UnitTests.Server:Destroy()
+	script.Parent.Server:Destroy()
+
 	for _, child in ipairs(script:GetChildren()) do
 		Client[child.Name] = child
 	end
 
 	for _, child in ipairs(script.Parent:GetChildren()) do
-		if child.Name ~= "Server" and child.Name ~= "Client" then
+		if child.Name ~= "Client" then
 			Client[child.Name] = child
 		end
 	end
