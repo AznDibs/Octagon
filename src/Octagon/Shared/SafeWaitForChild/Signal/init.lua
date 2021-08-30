@@ -9,11 +9,11 @@
 	-- Only when accessed from an object returned by Signal.new:
 
 	Signal.ConnectedConnectionCount : number
-	Signal.Connections : table
+	Signal.HandlerListHead : function | nli
 
 	Signal:Connect(callBack : function) --> Connection []
 	Signal:Fire(tuple : any) --> nil []
-	Signal:FireDeferred(tuple : any) --> nil []
+	Signal:DeferredFire(tuple : any) --> nil []
 	Signal:Wait() --> any [tuple]
 	Signal:WaitUntilArgumentsPassed(tuple : any) --> any [tuple]
     Signal:DisconnectAllConnections() --> nil []
@@ -21,7 +21,7 @@
 	Signal:IsDestroyed() --> boolean [IsDestroyed]
 ]]
 
-local Signal = {}
+local Signal = { _freeRunnerThread = nil }
 Signal.__index = Signal
 
 local Connection = require(script.Connection)
@@ -33,6 +33,7 @@ local LocalConstants = {
 	AlwaysAvailableMethods = {
 		"IsDestroyed",
 	},
+
 	ErrorMessages = {
 		InvalidArgument = "Invalid argument#%d to %s: expected %s, got %s",
 	},
@@ -45,7 +46,7 @@ end
 function Signal.new()
 	return setmetatable({
 		ConnectedConnectionCount = 0,
-		Connections = {},
+		HandlerListHead = nil,
 		_isDestroyed = false,
 		_isSignal = true,
 	}, Signal)
@@ -63,17 +64,19 @@ function Signal:Connect(callBack)
 	)
 
 	local connection = Connection.new(self, callBack)
-	table.insert(self.Connections, connection)
+
+	if self.HandlerListHead then
+		connection.Next = self.HandlerListHead
+		self.HandlerListHead = connection
+	else
+		self.HandlerListHead = connection
+	end
 
 	return connection
 end
 
 function Signal:DisconnectAllConnections()
-	for _, connection in ipairs(self.Connections) do
-		if connection:IsConnected() then
-			connection:Disconnect()
-		end
-	end
+	self.HandlerListHead = nil
 
 	return nil
 end
@@ -165,8 +168,6 @@ function Signal:WaitUntilArgumentsPassed(...)
 			end
 		end
 
-		-- Yield the thread to prevent overload in case thread concurrency issue
-		-- occurs with Signal:Wait():
 		task.wait()
 	end
 
@@ -174,41 +175,63 @@ function Signal:WaitUntilArgumentsPassed(...)
 end
 
 function Signal:Fire(...)
-	-- Call signals in reverse order (end - start) and use a primitive for loop rather than
-	-- an iterator function to not call handlers that were added while this method was
-	-- still running:
+	-- Call signals in reverse order (end - start):
 
-	local connectionsLength = #self.Connections
+	local connection = self.HandlerListHead
 
-	for index = connectionsLength, 1, -1 do
-		local connection = self.Connections[index]
+	while connection do
+		if connection:IsConnected() then
+			if not Signal._freeRunnerThread then
+				Signal._freeRunnerThread = coroutine.create(
+					Signal._runEventHandlerInFreeThread
+				)
+			end
 
-		if not connection or not connection:IsConnected() then
-			continue
+			task.spawn(Signal._freeRunnerThread, connection.Callback, ...)
 		end
 
-		task.spawn(connection.Callback, ...)
+		connection = connection.Next
 	end
 
 	return nil
 end
 
-function Signal:FireDeferred(...)
-	-- Call signals in reverse order (end - start) and use a primitive for loop rather than
-	-- an iterator function to not call handlers that were added while this method was
-	-- still running. This is same as Signal:Fire(), except it resumes handlers at a slightly
-	-- later time (deferred):
+function Signal:DeferredFire(...)
+	-- Call signals in reverse order (end - start), except deferred:
 
-	local connectionsLength = #self.Connections
+	local connection = self.HandlerListHead
 
-	for index = connectionsLength, 1, -1 do
-		local connection = self.Connections[index]
+	while connection do
+		if connection:IsConnected() then
+			if not Signal._freeRunnerThread then
+				Signal._freeRunnerThread = coroutine.create(
+					Signal._runEventHandlerInFreeThread
+				)
+			end
 
-		if not connection or not connection:IsConnected() then
-			continue
+			task.defer(Signal._freeRunnerThread, connection.Callback, ...)
 		end
 
-		task.defer(connection.Callback, ...)
+		connection = connection.Next
+	end
+
+	return nil
+end
+
+function Signal._acquireRunnerThreadAndCallEventHandler(callBack, ...)
+	local acquiredRunnerThread = Signal._freeRunnerThread
+	Signal._freeRunnerThread = nil
+
+	callBack(...)
+	Signal._freeRunnerThread = acquiredRunnerThread
+
+	return nil
+end
+
+function Signal._runEventHandlerInFreeThread(...)
+	Signal._acquireRunnerThreadAndCallEventHandler(...)
+	while true do
+		Signal._acquireRunnerThreadAndCallEventHandler(coroutine.yield())
 	end
 
 	return nil
