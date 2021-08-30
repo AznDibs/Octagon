@@ -252,13 +252,13 @@ function PlayerProfile:RegisterPhysicsDetectionFlag(detection, flag)
 	)
 
 	local detections = script:FindFirstAncestor("Server").Detections
-
 	local physicsDetectionModule = detections.Physics:FindFirstChild(detection)
 		and require(detections.Physics[detection])
-	local nonPhysicsDetectionModule = detections.NonPhysics:FindFirstChild(detection)
-		and require(detections.NonPhysics[detection])
-
-	assert(physicsDetectionModule or nonPhysicsDetectionModule, "Invalid detection")
+   
+	assert(
+		physicsDetectionModule or detections.NonPhysics:FindFirstChild(detection),
+		"Invalid detection"
+	)
 
 	if physicsDetectionModule then
 		local detectionData = self.DetectionData[detection]
