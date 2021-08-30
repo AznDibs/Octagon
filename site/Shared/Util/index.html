@@ -703,7 +703,7 @@
 <tbody>
 <tr>
 <td><code>basePart : BasePart</code></td>
-<td>A BasePart</td>
+<td>A BasePart object</td>
 </tr>
 </tbody>
 </table>
@@ -722,7 +722,7 @@
 <tbody>
 <tr>
 <td><code>basePart : BasePart</code></td>
-<td>A BasePart</td>
+<td>A BasePart object</td>
 </tr>
 <tr>
 <td><code>lastPosition : Vector3</code></td>
@@ -731,7 +731,7 @@
 </tbody>
 </table>
 <h3 id="utilisinstancedestroyed"><code>Util.IsInstanceDestroyed()</code></h3>
-<div class="highlight"><pre><span></span><code> <span class="n">Util</span><span class="p">.</span><span class="n">IsInstanceDestroyed</span><span class="p">(</span><span class="n">instance</span> <span class="p">:</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">lastPosition</span> <span class="p">:</span> <span class="n">Vector3</span><span class="p">)</span> <span class="c1">--&gt; boolean[IsInstanceDestroyed]</span>
+<div class="highlight"><pre><span></span><code> <span class="n">Util</span><span class="p">.</span><span class="n">IsInstanceDestroyed</span><span class="p">(</span><span class="n">instance</span> <span class="p">:</span> <span class="n">Instance</span><span class="p">)</span> <span class="c1">--&gt; boolean[IsInstanceDestroyed]</span>
 </code></pre></div>
 <p>Returns a boolean indicating if <code>instance</code> is destroyed, i.e via <a href="https://developer.roblox.com/en-us/api-reference/function/Instance/Destroy">Instance:Destroy</a>.</p>
 <table>
@@ -745,10 +745,6 @@
 <tr>
 <td><code>instance : Instance</code></td>
 <td>An Instance</td>
-</tr>
-<tr>
-<td><code>lastPosition : Vector3</code></td>
-<td>A Vector3</td>
 </tr>
 </tbody>
 </table>
@@ -766,11 +762,11 @@
 <tbody>
 <tr>
 <td><code>basePart : BasePart</code></td>
-<td>A BasePart</td>
+<td>A BasePart object</td>
 </tr>
 <tr>
-<td><code>lastPosition : Vector3</code></td>
-<td>A Vector3</td>
+<td><code>networkOwner : Player | nil</code></td>
+<td>A Player object or <code>nil</code></td>
 </tr>
 </tbody>
 </table>
@@ -792,7 +788,7 @@
 <tbody>
 <tr>
 <td><code>basePart : BasePart</code></td>
-<td>A BasePart</td>
+<td>A BasePart object</td>
 </tr>
 </tbody>
 </table>
