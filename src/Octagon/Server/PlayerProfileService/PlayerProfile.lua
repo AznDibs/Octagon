@@ -123,7 +123,7 @@ function PlayerProfile:Destroy()
 				assert(
 					availableMethodIndex,
 					("Can only call methods [%s] as profile is destroyed"):format(
-						table.concat(LocalConstants.Methods.AlwaysAvailableMethods)
+						table.concat(LocalConstants.AlwaysAvailableMethods)
 					)
 				)
 
