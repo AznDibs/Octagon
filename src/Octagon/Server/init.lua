@@ -502,10 +502,10 @@ function Server._initSignals()
 	PlayerProfileService.OnPlayerProfileDestroyed:Connect(function(player)
 		Server.MonitoringPlayerProfiles[player] = nil
 
-		if not Server.AreMonitoringPlayerProfilesLeft() then
+		if Server.AreMonitoringPlayerProfilesLeft() then
 			return nil
 		end
-
+		
 		if
 			Server._heartBeatScriptConnection and Server._heartBeatScriptConnection.Connected
 		then
