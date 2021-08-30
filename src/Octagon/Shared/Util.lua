@@ -22,6 +22,16 @@ local SharedConstants = require(script:FindFirstAncestor("Octagon").Shared.Share
 local LocalConstants = { PlayerMinWalkingDistance = 0.125 }
 
 function Util.GetPlayerEquippedTools(player)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.GetPlayerEquippedTools()",
+			"Player",
+			typeof(player)
+		)
+	)
+
 	local equippedTools = {}
 	local equippedToolsCount = 0
 
@@ -38,6 +48,16 @@ function Util.GetPlayerEquippedTools(player)
 end
 
 function Util.GetBasePartNetworkOwner(basePart)
+	assert(
+		typeof(basePart) == "Instance" and basePart:IsA("BasePart"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.GetBasePartNetworkOwner()",
+			"BasePart",
+			typeof(basePart)
+		)
+	)
+
 	if basePart.Anchored then
 		return nil
 	end
@@ -46,6 +66,26 @@ function Util.GetBasePartNetworkOwner(basePart)
 end
 
 function Util.SetBasePartNetworkOwner(basePart, networkOwner)
+	assert(
+		typeof(basePart) == "Instance" and basePart:IsA("BasePart"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.SetBasePartNetworkOwner()",
+			"BasePart",
+			typeof(basePart)
+		)
+	)
+	assert(
+		typeof(networkOwner) == "Instance" and networkOwner:IsA("Player")
+			or networkOwner == nil,
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			2,
+			"Util.SetBasePartNetworkOwner()",
+			"Player or nil",
+			typeof(networkOwner)
+		)
+	)
+
 	local canSetNetworkOwnership, errorMessage = basePart:CanSetNetworkOwnership()
 
 	if canSetNetworkOwnership then
@@ -64,14 +104,63 @@ function Util.SetBasePartNetworkOwner(basePart, networkOwner)
 end
 
 function Util.HasBasePartFallenToVoid(basePart)
+	assert(
+		typeof(basePart) == "Instance" and basePart:IsA("BasePart"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.HasBasePartFallenToVoid()",
+			"BasePart",
+			typeof(basePart)
+		)
+	)
+
 	return basePart.Position.Y <= Workspace.FallenPartsDestroyHeight
 end
 
 function Util.IsBasePartFalling(basePart, lastPosition)
+	assert(
+		typeof(basePart) == "Instance" and basePart:IsA("BasePart"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.IsBasePartFalling()",
+			"BasePart",
+			typeof(basePart)
+		)
+	)
+	assert(
+		typeof(lastPosition) == "Vector3",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			2,
+			"Util.IsBasePartFalling()",
+			"Vector3",
+			typeof(basePart)
+		)
+	)
+
 	return basePart.Position.Y < lastPosition.Y
 end
 
 function Util.IsPlayerWalking(player, lastPosition)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.IsPlayerWalking()",
+			"Player",
+			typeof(player)
+		)
+	)
+
+	assert(
+		typeof(lastPosition) == "Vector3",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			2,
+			"Util.IsPlayerWalking()",
+			"Vector3",
+			typeof(lastPosition)
+		)
+	)
+
 	if not player.Character then
 		return false
 	end
@@ -83,6 +172,16 @@ function Util.IsPlayerWalking(player, lastPosition)
 end
 
 function Util.DoValidPlayerBodyPartsExist(player)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.DoValidPlayerBodyPartsExist()",
+			"Player",
+			typeof(player)
+		)
+	)
+
 	local character = player.Character
 
 	if not character then
@@ -93,6 +192,16 @@ function Util.DoValidPlayerBodyPartsExist(player)
 end
 
 function Util.IsInstanceDestroyed(instance)
+	assert(
+		typeof(instance) == "Instance",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.IsInstanceDestroyed()",
+			"Player",
+			typeof(instance)
+		)
+	)
+
 	local _, response = pcall(function()
 		instance.Parent = instance
 	end)
