@@ -26,6 +26,7 @@ local NoClip = {
 }
 
 local CollectionService = game:GetService("CollectionService")
+local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
 local Shared = script:FindFirstAncestor("Octagon").Shared
@@ -75,10 +76,11 @@ function NoClip._isNoClipping(player, physicsData)
 	if lastCurrentPositionRay then
 		local instance = lastCurrentPositionRay.Instance
           
-		-- Safe check to prevent fasle positives:
+		-- Safe check to prevent false positives:
 		if
 			CollectionService:HasTag(instance, SharedConstants.Tags.NoClipBlackListed)
 			or not primaryPart:CanCollideWith(instance)
+			or Players:GetPlayerFromCharacter(instance.Parent) or Players:GetPlayerFromCharacter(instance.Parent.Parent)
 		then
 			return false
 		end
