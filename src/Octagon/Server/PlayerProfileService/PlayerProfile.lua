@@ -74,7 +74,7 @@ function PlayerProfile.new(player)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"PlayerProfile.new()",
-			"player",
+			"a player object",
 			typeof(player)
 		)
 	)
