@@ -20,12 +20,13 @@ local Client = {
 
 local Players = game:GetService("Players")
 
-local SharedConstants = require(script:FindFirstAncestor("Octagon").Shared.SharedConstants)
-local Signal = require(script:FindFirstAncestor("Octagon").Shared.Signal)
-local SafeWaitForChild = require(script:FindFirstAncestor("Octagon").Shared.SafeWaitForChild)
-local Maid = require(script:FindFirstAncestor("Octagon").Shared.Maid)
-local InitMaidFor = require(script.Parent.Shared.InitMaidFor)
-local DestroyAllMaids = require(script.Parent.Shared.DestroyAllMaids)
+local Shared = script:FindFirstAncestor("Octagon").Shared
+local SharedConstants = require(Shared.SharedConstants)
+local Signal = require(Shared.Signal)
+local SafeWaitForChild = require(Shared.SafeWaitForChild)
+local Maid = require(Shared.Maid)
+local InitMaidFor = require(Shared.InitMaidFor)
+local DestroyAll = require(Shared.DestroyAll)
 
 local LocalConstants = { MinPlayerHardGroundLandYVelocity = 145 }
 
@@ -84,7 +85,7 @@ function Client._init()
 end
 
 function Client._cleanup()
-	DestroyAllMaids(Client)
+	DestroyAll(Client, Maid.IsMaid)
 
 	return nil
 end
@@ -120,7 +121,7 @@ function Client._initModules()
 	for _, child in ipairs(script:GetChildren()) do
 		Client[child.Name] = child
 	end
-        
+
 	for _, child in ipairs(script.Parent:GetChildren()) do
 		if child.Name ~= "Server" and child.Name ~= "Client" then
 			Client[child.Name] = child
