@@ -48,7 +48,7 @@ local Maid = require(script.Parent.Shared.Maid)
 local RetryPcall = require(script.Parent.Shared.RetryPcall)
 local Config = require(script.Config)
 local SharedConstants = require(script.Parent.Shared.SharedConstants)
-local DestroyAllMaids = require(script.Parent.Shared.DestroyAllMaids)
+local DestroyAll = require(script.Parent.Shared.DestroyAll)
 local InitMaidFor = require(script.Parent.Shared.InitMaidFor)
 local Util = require(script.Parent.Shared.Util)
 
@@ -101,7 +101,38 @@ function Server.IsPlayerGameOwner(player)
 end
 
 function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()",
+			"player",
+			typeof(player)
+		)
+	)
+	assert(
+		typeof(value) == "number"
+			or typeof(value) == "RBXScriptSignal"
+			or Signal.IsSignal(value)
+			or typeof(value) == "function",
+
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			2,
+			"Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()",
+			"number or RBXScriptSignal or signal or function",
+			typeof(player)
+		)
+	)
+  
 	local playerProfile = PlayerProfileService.GetPlayerProfile(player)
+
+	assert(
+		playerProfile,
+		(
+			"Cannot temporarily black list player [%s] as player isn't being monitored by Octagon"
+		):format(player.Name)
+	)
+
 	Server.MonitoringPlayerProfiles[player] = nil
 
 	if Server._heartBeatScriptConnection and Server._heartBeatScriptConnection.Connected then
@@ -372,7 +403,7 @@ end
 function Server._cleanup()
 	PlayerProfileService.DestroyLoadedPlayerProfiles()
 	Server._cleanupDetections()
-	DestroyAllMaids(Server)
+	DestroyAll(Server, Maid.IsMaid)
 
 	return nil
 end
@@ -406,20 +437,20 @@ function Server._initSignals()
 		then
 			return nil
 		end
-  
+
 		Server._heartBeatScriptConnection = Server._startHeartBeatUpdate()
 	end)
 
 	PlayerProfileService.OnPlayerProfileDestroyed:Connect(function(player)
 		Server.MonitoringPlayerProfiles[player] = nil
 
-		if
-			not Server.AreMonitoringPlayerProfilesLeft()
-		then
+		if not Server.AreMonitoringPlayerProfilesLeft() then
 			return nil
 		end
 
-		if Server._heartBeatScriptConnection and Server._heartBeatScriptConnection.Connected then
+		if
+			Server._heartBeatScriptConnection and Server._heartBeatScriptConnection.Connected
+		then
 			Server._heartBeatScriptConnection:Disconnect()
 		end
 	end)
@@ -581,7 +612,7 @@ function Server._initModules()
 	for _, child in ipairs(script:GetChildren()) do
 		Server[child.Name] = child
 	end
-	         
+
 	for _, child in ipairs(script.Parent:GetChildren()) do
 		if child.Name ~= "Server" then
 			Server[child.Name] = child
