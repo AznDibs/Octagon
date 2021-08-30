@@ -421,6 +421,14 @@ function Server.Stop()
 end
 
 function Server._cleanup()
+	for _, playerProfile in pairs(PlayerProfileService.LoadedPlayerProfiles) do
+		local activePhysicsDetectionFlag = playerProfile:GetCurrentActivePhysicsDetectionFlag()
+		if activePhysicsDetectionFlag then
+			playerProfile.DetectionData[activePhysicsDetectionFlag].FlagExpireDt = 0
+			playerProfile.OnPhysicsDetectionFlagExpire:Fire()
+		end
+	end
+
 	PlayerProfileService.DestroyLoadedPlayerProfiles()
 	Server._cleanupDetections()
 	DestroyAll(Server, Maid.IsMaid)
