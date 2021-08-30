@@ -50,17 +50,8 @@ local LocalConstants = {
 	MinPhysicsThresholdIncrement = 0,
 	MaxPhysicsThresholdIncrement = math.huge,
 
-	ReferenceTypes = {
-		"table",
-		"function",
-		"Instance",
-		"string",
-	},
-
-	Methods = {
-		AlwaysAvailable = {
-			"IsDestroyed",
-		},
+	AlwaysAvailableMethods = {
+		"IsDestroyed",
 	},
 }
 
@@ -78,7 +69,7 @@ function PlayerProfile.new(player)
 			typeof(player)
 		)
 	)
-  
+
 	assert(
 		not PlayerProfileService.LoadedPlayerProfiles[player],
 		"Can't create new player profile class for the same player!"
@@ -125,19 +116,21 @@ function PlayerProfile:Destroy()
 		__index = function(_, key)
 			if typeof(PlayerProfile[key]) == "function" then
 				local availableMethodIndex = table.find(
-					LocalConstants.Methods.AlwaysAvailable,
+					LocalConstants.AlwaysAvailableMethods,
 					key
 				)
 
 				assert(
 					availableMethodIndex,
 					("Can only call methods [%s] as profile is destroyed"):format(
-						table.concat(LocalConstants.Methods.AlwaysAvailable)
+						table.concat(LocalConstants.Methods.AlwaysAvailableMethods)
 					)
 				)
 
 				return PlayerProfile[key]
 			end
+
+			return nil
 		end,
 	})
 
