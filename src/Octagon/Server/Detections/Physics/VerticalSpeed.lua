@@ -26,13 +26,13 @@ local VerticalSpeed = {
 	Enabled = true,
 }
 
-local Octagon = require(script:FindFirstAncestor("Octagon"))
-local Util = require(Octagon.Shared.Util)
-local SharedConstants = require(Octagon.Shared.SharedConstants)
-local Signal = require(Octagon.Shared.Signal)
-local Maid = require(Octagon.Shared.Maid)
-local InitMaidFor = require(Octagon.Shared.InitMaidFor)
-local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
+local Shared = script:FindFirstAncestor("Octagon").Shared
+local Util = require(Shared.Util)
+local SharedConstants = require(Shared.SharedConstants)
+local Signal = require(Shared.Signal)
+local Maid = require(Shared.Maid)
+local InitMaidFor = require(Shared.InitMaidFor)
+local DestroyAll = require(Shared.DestroyAll)
 
 VerticalSpeed._maid = Maid.new()
 VerticalSpeed._onPlayerDetection = Signal.new()
@@ -68,7 +68,7 @@ function VerticalSpeed.Start(detectionData, playerProfile, dt)
 end
 
 function VerticalSpeed.Cleanup()
-	DestroyAllMaids(VerticalSpeed)
+	DestroyAll(VerticalSpeed, Maid.IsMaid)
 
 	return nil
 end
