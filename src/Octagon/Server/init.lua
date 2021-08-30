@@ -67,6 +67,16 @@ function Server.AreMonitoringPlayerProfilesLeft()
 end
 
 function Server.IsPlayerGameOwner(player)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Octagon.IsPlayerGameOwner()",
+			"Player",
+			typeof(player)
+		)
+	)
+
 	local cachedResult = Server._isPlayerGameOwnerResultCache[player.UserId]
 
 	if cachedResult ~= nil then
@@ -106,7 +116,7 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()",
-			"player",
+			"Player",
 			typeof(player)
 		)
 	)
@@ -119,11 +129,11 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			2,
 			"Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()",
-			"number or RBXScriptSignal or signal or function",
+			"number or RBXScriptSignal or Signal or function",
 			typeof(player)
 		)
 	)
-  
+
 	local playerProfile = PlayerProfileService.GetPlayerProfile(player)
 
 	assert(
@@ -186,6 +196,16 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 end
 
 function Server.IsPlayerSubjectToBeMonitored(player)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Octagon.IsPlayerSubjectToBeMonitored()",
+			"Player",
+			typeof(player)
+		)
+	)
+
 	return Server._shouldMonitorPlayer(player)
 end
 
