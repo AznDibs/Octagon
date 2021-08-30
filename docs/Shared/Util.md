@@ -37,12 +37,12 @@ Returns a boolean indicating if `basePart` is falling, i.e `basePart.Position.Y`
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
 | `basePart : BasePart` | A BasePart object |
-| `lastPosition : Vector3` | A Vector3 object |
+| `lastPosition : Vector3` | A Vector3 |
 
 ### `Util.IsInstanceDestroyed()`
 
 ```lua
- Util.IsInstanceDestroyed(instance : Instance, lastPosition : Vector3) --> boolean[IsInstanceDestroyed]
+ Util.IsInstanceDestroyed(instance : Instance) --> boolean[IsInstanceDestroyed]
 ```
 
 Returns a boolean indicating if `instance` is destroyed, i.e via [Instance:Destroy](https://developer.roblox.com/en-us/api-reference/function/Instance/Destroy).
@@ -50,7 +50,6 @@ Returns a boolean indicating if `instance` is destroyed, i.e via [Instance:Destr
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
 | `instance : Instance` | An Instance |
-| `lastPosition : Vector3` | A Vector3 object |
 
 ### `Util.SetBasePartNetworkOwner()`
 
@@ -63,7 +62,7 @@ Sets the network owner of `basePart` to `networkOwner`.
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
 | `basePart : BasePart` | A BasePart object |
-| `lastPosition : Vector3` | A Vector3 object |
+| `networkOwner : Player | nil` | A Player object or `nil` |
 
 !!!note
     This method will warn if the network ownership of `basePart` can't be set, along with the reason.
@@ -94,7 +93,7 @@ Returns a boolean indicating if `player` is falling by comparing if `player.Char
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
 | `player : Player` | A Player object |
-| `lastPosition : Vector3` | A Vector3 object |
+| `lastPosition : Vector3` | A Vector3 |
 
 !!!note
     This method will return `false` if `player`'s character isn't loaded.
