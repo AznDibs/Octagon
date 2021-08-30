@@ -33,13 +33,14 @@ PlayerProfile.__index = PlayerProfile
 
 local Workspace = game:GetService("Workspace")
 
-local Octagon = require(script:FindFirstAncestor("Octagon"))
+local Octagon = script:FindFirstAncestor("Octagon")
 local Signal = require(Octagon.Shared.Signal)
 local Maid = require(Octagon.Shared.Maid)
-local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
-local ClearReferenceTypes = require(Octagon.ClearReferenceTypes)
+local DestroyAll = require(Octagon.Shared.DestroyAll)
+local ClearReferenceTypes = require(Octagon.Server.ClearReferenceTypes)
 local InitMaidFor = require(Octagon.Shared.InitMaidFor)
 local PlayerProfileService = require(script.Parent)
+local SharedConstants = require(Octagon.Shared.SharedConstants)
 
 local LocalConstants = {
 	MaxServerFps = 60,
@@ -48,10 +49,6 @@ local LocalConstants = {
 	MaxPhysicsThreshold = math.huge,
 	MinPhysicsThresholdIncrement = 0,
 	MaxPhysicsThresholdIncrement = math.huge,
-
-	ErrorMessages = {
-		InvalidArgument = "Invalid argument#%d to %s: expected %s, got %s",
-	},
 
 	ReferenceTypes = {
 		"table",
@@ -74,14 +71,14 @@ end
 function PlayerProfile.new(player)
 	assert(
 		typeof(player) == "Instance" and player:IsA("Player"),
-		LocalConstants.ErrorMessages.InvalidArgument:format(
+		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"PlayerProfile.new()",
 			"player",
 			typeof(player)
 		)
 	)
-
+  
 	assert(
 		not PlayerProfileService.LoadedPlayerProfiles[player],
 		"Can't create new player profile class for the same player!"
@@ -155,6 +152,15 @@ end
 
 function PlayerProfile:Init(physicsDetections)
 	assert(not self:IsInit(), "Cannot init player profile if it is already init")
+	assert(
+		typeof(physicsDetections) == "table",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"PlayerProfile:Init()",
+			"table",
+			typeof(physicsDetections)
+		)
+	)
 
 	self:_initPhysicsDetectionData(physicsDetections)
 	self:_initPhysicsThresholds(physicsDetections)
@@ -167,6 +173,26 @@ function PlayerProfile:Init(physicsDetections)
 end
 
 function PlayerProfile:IncrementPhysicsThreshold(physicsThreshold, thresholdIncrement)
+	assert(
+		typeof(physicsThreshold) == "string",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"PlayerProfile:IncrementPhysicsThreshold()",
+			"string",
+			typeof(physicsThreshold)
+		)
+	)
+
+	assert(
+		typeof(thresholdIncrement) == "number",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			2,
+			"PlayerProfile:IncrementPhysicsThreshold()",
+			"number",
+			typeof(thresholdIncrement)
+		)
+	)
+
 	self.PhysicsThresholds[physicsThreshold] += thresholdIncrement
 	self._physicsThresholdIncrements[physicsThreshold] += thresholdIncrement
 
@@ -174,6 +200,28 @@ function PlayerProfile:IncrementPhysicsThreshold(physicsThreshold, thresholdIncr
 end
 
 function PlayerProfile:DecrementPhysicsThreshold(physicsThreshold, thresholdDecrement)
+	assert(
+		typeof(physicsThreshold) == "string",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"PlayerProfile:DecrementPhysicsThreshold()",
+			"string",
+			typeof(physicsThreshold)
+		)
+	)
+
+	assert(
+		typeof(thresholdDecrement) == "number",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			2,
+			"PlayerProfile:DecrementPhysicsThreshold()",
+			"number",
+			typeof(thresholdDecrement)
+		)
+	)
+
+	assert(self.PhysicsThresholds[physicsThreshold], "Invalid physics threshold")
+
 	self.PhysicsThresholds[physicsThreshold] = math.clamp(
 		self.PhysicsThresholds[physicsThreshold] - thresholdDecrement,
 		LocalConstants.MinPhysicsThreshold,
@@ -190,13 +238,39 @@ function PlayerProfile:DecrementPhysicsThreshold(physicsThreshold, thresholdDecr
 end
 
 function PlayerProfile:RegisterPhysicsDetectionFlag(detection, flag)
-	local physicsDetections = script:FindFirstAncestor("Server").Detections.Physics
+	assert(
+		typeof(detection) == "string",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"PlayerProfile:RegisterPhysicsDetectionFlag()",
+			"string",
+			typeof(detection)
+		)
+	)
 
-	if physicsDetections:FindFirstChild(detection) ~= nil then
+	assert(
+		typeof(flag) == "string",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			2,
+			"PlayerProfile:RegisterPhysicsDetectionFlag()",
+			"string",
+			typeof(flag)
+		)
+	)
+
+	local detections = script:FindFirstAncestor("Server").Detections
+
+	local physicsDetectionModule = detections.Physics:FindFirstChild(detection)
+		and require(detections.Physics[detection])
+	local nonPhysicsDetectionModule = detections.NonPhysics:FindFirstChild(detection)
+		and require(detections.NonPhysics[detection])
+
+	assert(physicsDetectionModule or nonPhysicsDetectionModule, "Invalid detection")
+
+	if physicsDetectionModule then
 		local detectionData = self.DetectionData[detection]
 
-		detectionData.FlagExpireDt =
-			require(physicsDetections[detection]).PlayerDetectionFlagExpireInterval
+		detectionData.FlagExpireDt = physicsDetectionModule.PlayerDetectionFlagExpireInterval
 
 		task.spawn(function()
 			while detectionData.FlagExpireDt > 0 do
@@ -240,11 +314,21 @@ function PlayerProfile:GetCurrentActivePhysicsDetectionFlag()
 end
 
 function PlayerProfile:GetPhysicsThresholdIncrement(physicsThreshold)
+	assert(
+		typeof(physicsThreshold) == "string",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"PlayerProfile:GetPhysicsThresholdIncrement()",
+			"string",
+			typeof(physicsThreshold)
+		)
+	)
+
 	return self._physicsThresholdIncrements[physicsThreshold]
 end
 
 function PlayerProfile:_cleanup()
-	DestroyAllMaids(self)
+	DestroyAll(self, Maid.IsMaid)
 	ClearReferenceTypes(self)
 
 	return nil
