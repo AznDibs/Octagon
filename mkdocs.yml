@@ -12,6 +12,7 @@ repo_name: Octagon
 
 theme:
   name: material
+  favicon: Images/Favicon.png
   palette:
     scheme: default
     primary: deep purple
