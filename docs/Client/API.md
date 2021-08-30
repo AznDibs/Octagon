@@ -32,7 +32,7 @@ Starts checking the humanoid state of the client for fling detections.
 Octagon.IsStarted() --> boolean [IsStarted]
 ```
 
-Returns a boolean indicating if Octagon is started through [Octagon.Start()](https://silentsreplacement.github.io/Octagon/Client/API/#octagonstart).
+Returns a boolean indicating if Octagon is started.
 
 ### `Octagon.IsStopped()`
 
@@ -40,7 +40,7 @@ Returns a boolean indicating if Octagon is started through [Octagon.Start()](htt
 Octagon.IsStopped() --> boolean [IsStopped]
 ```
 
-Returns a boolean indicating if Octagon is stopped through [Octagon.Stop()](https://silentsreplacement.github.io/Octagon/Client/API/#octagonstop).
+Returns a boolean indicating if Octagon is stopped.
 
 ### `Octagon.Stop()`
 
