@@ -72,7 +72,7 @@ function Server.IsPlayerGameOwner(player)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Octagon.IsPlayerGameOwner()",
-			"Player",
+			"a Player object",
 			typeof(player)
 		)
 	)
@@ -116,7 +116,7 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()",
-			"Player",
+			"a Player object",
 			typeof(player)
 		)
 	)
@@ -201,7 +201,7 @@ function Server.IsPlayerSubjectToBeMonitored(player)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Octagon.IsPlayerSubjectToBeMonitored()",
-			"Player",
+			"a Player object",
 			typeof(player)
 		)
 	)
@@ -281,6 +281,16 @@ function Server._shouldMonitorPlayer(player)
 end
 
 function Server.BlacklistNoClipMonitoringParts(parts)
+	assert(
+		typeof(parts) == "table",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Server.BlacklistNoClipMonitoringParts()",
+			"table",
+			typeof(parts)
+		)
+	)
+
 	for _, part in ipairs(parts) do
 		if not part:IsA("BasePart") then
 			continue
@@ -293,6 +303,16 @@ function Server.BlacklistNoClipMonitoringParts(parts)
 end
 
 function Server.UnBlacklistNoClipMonitoringParts(parts)
+	assert(
+		typeof(parts) == "table",
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Server.UnBlacklistNoClipMonitoringParts()",
+			"table",
+			typeof(parts)
+		)
+	)
+
 	for _, part in ipairs(parts) do
 		if not part:IsA("BasePart") then
 			continue
