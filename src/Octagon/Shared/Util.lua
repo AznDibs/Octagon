@@ -27,7 +27,7 @@ function Util.GetPlayerEquippedTools(player)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.GetPlayerEquippedTools()",
-			"Player",
+			"a Player object",
 			typeof(player)
 		)
 	)
@@ -53,7 +53,7 @@ function Util.GetBasePartNetworkOwner(basePart)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.GetBasePartNetworkOwner()",
-			"BasePart",
+			"a BasePart object",
 			typeof(basePart)
 		)
 	)
@@ -71,7 +71,7 @@ function Util.SetBasePartNetworkOwner(basePart, networkOwner)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.SetBasePartNetworkOwner()",
-			"BasePart",
+			"a BasePart object",
 			typeof(basePart)
 		)
 	)
@@ -81,7 +81,7 @@ function Util.SetBasePartNetworkOwner(basePart, networkOwner)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			2,
 			"Util.SetBasePartNetworkOwner()",
-			"Player or nil",
+			"a Player object or nil",
 			typeof(networkOwner)
 		)
 	)
@@ -109,7 +109,7 @@ function Util.HasBasePartFallenToVoid(basePart)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.HasBasePartFallenToVoid()",
-			"BasePart",
+			"a BasePart object",
 			typeof(basePart)
 		)
 	)
@@ -123,7 +123,7 @@ function Util.IsBasePartFalling(basePart, lastPosition)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.IsBasePartFalling()",
-			"BasePart",
+			"a BasePart object",
 			typeof(basePart)
 		)
 	)
@@ -132,7 +132,7 @@ function Util.IsBasePartFalling(basePart, lastPosition)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			2,
 			"Util.IsBasePartFalling()",
-			"Vector3",
+			"a Vector3 object",
 			typeof(basePart)
 		)
 	)
@@ -146,7 +146,7 @@ function Util.IsPlayerWalking(player, lastPosition)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.IsPlayerWalking()",
-			"Player",
+			"a Player object",
 			typeof(player)
 		)
 	)
@@ -156,7 +156,7 @@ function Util.IsPlayerWalking(player, lastPosition)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			2,
 			"Util.IsPlayerWalking()",
-			"Vector3",
+			"a Vector3 object",
 			typeof(lastPosition)
 		)
 	)
@@ -177,7 +177,7 @@ function Util.DoValidPlayerBodyPartsExist(player)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.DoValidPlayerBodyPartsExist()",
-			"Player",
+			"a Player object",
 			typeof(player)
 		)
 	)
@@ -197,7 +197,7 @@ function Util.IsInstanceDestroyed(instance)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.IsInstanceDestroyed()",
-			"Player",
+			"an Instance",
 			typeof(instance)
 		)
 	)
