@@ -27,6 +27,11 @@ local PlayerProfile = require(PlayerProfileService.PlayerProfile)
 local Util = require(Octagon.Shared.Util)
 
 function Server.TestUtilModule()
+	assert(
+		not Octagon.IsStarted(),
+		"Octagon should not be started in order to test util module"
+	)
+
 	print("[----------------------------------------")
 	print("Starting tests for Util Module")
 	print("----------------------------------------]")
@@ -276,6 +281,11 @@ function Server.TestUtilModule()
 end
 
 function Server.TestPlayerProfileServiceModule()
+	assert(
+		not Octagon.IsStarted(),
+		"Octagon should not be started in order to test PlayerProfileService module"
+	)
+
 	local player = Server._getPlayer()
 
 	if not player then
@@ -304,7 +314,7 @@ function Server.TestPlayerProfileServiceModule()
 			"PlayerProfileService.OnPlayerProfileLoaded [Signal]"
 		)
 	end
- 
+
 	-- PlayerProfileService.OnPlayerProfileDestroyed [Signal] test:
 	do
 		-- Expected behaviour: PlayerProfileService.OnPlayerProfileDestroyed should be fired
