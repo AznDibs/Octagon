@@ -34,19 +34,36 @@ function Connection.new(signal, callBack)
 
 	return setmetatable({
 		Callback = callBack,
+		Next = nil,
 		_isConnected = true,
 		_signal = signal,
 		_isConnection = true,
-		_signalConnectionIndex = #signal.Connections + 1,
 	}, Connection)
 end
 
 function Connection:Disconnect()
 	self._isConnected = false
 	self._signal.ConnectedConnectionCount -= 1
-	table.remove(self._signal.Connections, self._signalConnectionIndex)
+
+	-- Unhook the node, but DON'T clear it. That way any fire calls that are
+	-- currently sitting on this node will be able to iterate forwards off of
+	-- it, but any subsequent fire calls will not hit it, and it will be GCed
+	-- when no more fire calls are sitting on it.
+	if self._signal.HandlerListHead == self then
+		self._signal.HandlerListHead = self.Next
+	else
+		local previousHandlerListHead = self._signal.HandlerListHead
+		while previousHandlerListHead and previousHandlerListHead.Next ~= self do
+			previousHandlerListHead = previousHandlerListHead.Next
+		end
+
+		if previousHandlerListHead then
+			previousHandlerListHead.Next = self.Next
+		end
+	end
 
 	ClearReferenceTypes(self)
+	self._connected = false
 
 	setmetatable(self, {
 		__index = function(_, key)
