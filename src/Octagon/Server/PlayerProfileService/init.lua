@@ -17,9 +17,12 @@ local PlayerProfileService = {
 	LoadedPlayerProfiles = {},
 	_areSignalsInit = false,
 	_areModulesInit = false,
+	_destroyedPlayerProfiles = {},
 }
 
-local Signal = require(script:FindFirstAncestor("Octagon").Shared.Signal)
+local Shared = script:FindFirstAncestor("Octagon").Shared
+local Signal = require(Shared.Signal)
+local SharedConstants = require(Shared.SharedConstants)
 
 PlayerProfileService.OnPlayerProfileLoaded = Signal.new()
 PlayerProfileService.OnPlayerProfileDestroyed = Signal.new()
@@ -38,7 +41,26 @@ function PlayerProfileService.DestroyLoadedPlayerProfiles()
 end
 
 function PlayerProfileService.GetPlayerProfile(player)
-	return PlayerProfileService.LoadedPlayerProfiles[player] or PlayerProfileService._waitForPlayerProfile(player)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"PlayerProfileService.GetPlayerProfile()",
+			"player",
+			typeof(player)
+		)
+	)
+
+	local playerProfile = PlayerProfileService.LoadedPlayerProfiles[player]
+	
+	if playerProfile then
+		return playerProfile
+	elseif not table.find(PlayerProfileService._destroyedPlayerProfiles, player.UserId)
+	then
+		return PlayerProfileService._waitForPlayerProfile(player)
+	end
+
+	return nil
 end
 
 function PlayerProfileService._waitForPlayerProfile(player)
@@ -73,12 +95,13 @@ end
 function PlayerProfileService._initSignals()
 	PlayerProfileService._areSignalsInit = true
 
-	PlayerProfileService.OnPlayerProfileDestroyed:Connect(function(player)
-		PlayerProfileService.LoadedPlayerProfiles[player] = nil
-	end)
-
 	PlayerProfileService.OnPlayerProfileLoaded:Connect(function(playerProfile)
 		PlayerProfileService.LoadedPlayerProfiles[playerProfile.Player] = playerProfile
+	end)
+ 
+	PlayerProfileService.OnPlayerProfileDestroyed:Connect(function(player)
+		table.insert(PlayerProfileService._destroyedPlayerProfiles, player.UserId)
+		PlayerProfileService.LoadedPlayerProfiles[player] = nil
 	end)
 
 	return nil
