@@ -14,12 +14,12 @@ local MultiToolEquip = {
 	Enabled = true,
 }
 
-local Octagon = require(script:FindFirstAncestor("Octagon"))
-local Util = require(Octagon.Shared.Util)
-local Signal = require(Octagon.Shared.Signal)
-local Maid = require(Octagon.Shared.Maid)
-local InitMaidFor = require(Octagon.Shared.InitMaidFor)
-local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
+local Shared = script:FindFirstAncestor("Octagon").Shared
+local Util = require(Shared.Util)
+local Signal = require(Shared.Signal)
+local Maid = require(Shared.Maid)
+local InitMaidFor = require(Shared.InitMaidFor)
+local DestroyAll = require(Shared.DestroyAll)
 
 local LocalConstants = { MaxEquippedToolCount = 1 }
 
@@ -78,7 +78,7 @@ function MultiToolEquip.Start(playerProfile)
 end
 
 function MultiToolEquip.Cleanup()
-	DestroyAllMaids(MultiToolEquip)
+	DestroyAll(MultiToolEquip, Maid.IsMaid)
 
 	return nil
 end
@@ -106,7 +106,9 @@ function MultiToolEquip._initSignals()
 			-- Parent the tool back to the backpack. Do this in the same frame except
 			-- at a very very slightly later time to prevent bugs:
 			task.defer(function()
-				tool.Parent = player.Backpack
+				if not Util.IsInstanceDestroyed(tool) then
+					tool.Parent = player.Backpack
+				end
 			end)
 		end
 	end)

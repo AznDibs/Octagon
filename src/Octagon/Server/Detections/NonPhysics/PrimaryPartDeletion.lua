@@ -15,15 +15,15 @@ local PrimaryPartDeletion = {
 }
 
 local CollectionService = game:GetService("CollectionService")
-
-local Octagon = require(script:FindFirstAncestor("Octagon"))
-local SharedConstants = require(Octagon.Shared.SharedConstants)
-local Util = require(Octagon.Shared.Util)
-local Signal = require(Octagon.Shared.Signal)
-local Maid = require(Octagon.Shared.Maid)
-local InitMaidFor = require(Octagon.Shared.InitMaidFor)
-local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
-
+  
+local Shared = script:FindFirstAncestor("Octagon").Shared
+local SharedConstants = require(Shared.SharedConstants)
+local Util = require(Shared.Util)
+local Signal = require(Shared.Signal)
+local Maid = require(Shared.Maid)
+local InitMaidFor = require(Shared.InitMaidFor)
+local DestroyAll = require(Shared.DestroyAll)
+   
 PrimaryPartDeletion._onPlayerDetection = Signal.new()
 PrimaryPartDeletion._maid = Maid.new()
 
@@ -59,7 +59,7 @@ function PrimaryPartDeletion.Start(playerProfile)
 end
 
 function PrimaryPartDeletion.Cleanup()
-	DestroyAllMaids(PrimaryPartDeletion)
+	DestroyAll(PrimaryPartDeletion, Maid.IsMaid)
 
 	return nil
 end
