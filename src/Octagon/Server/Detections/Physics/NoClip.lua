@@ -75,12 +75,13 @@ function NoClip._isNoClipping(player, physicsData)
 
 	if lastCurrentPositionRay then
 		local instance = lastCurrentPositionRay.Instance
-          
+
 		-- Safe check to prevent false positives:
 		if
 			CollectionService:HasTag(instance, SharedConstants.Tags.NoClipBlackListed)
 			or not primaryPart:CanCollideWith(instance)
-			or Players:GetPlayerFromCharacter(instance.Parent) or Players:GetPlayerFromCharacter(instance.Parent.Parent)
+			or Players:GetPlayerFromCharacter(instance.Parent)
+			or Players:GetPlayerFromCharacter(instance.Parent.Parent)
 		then
 			return false
 		end
@@ -109,7 +110,7 @@ end
 
 function NoClip._initSignals()
 	InitMaidFor(NoClip, NoClip._maid, Signal.IsSignal)
-	
+
 	NoClip._onPlayerDetection:Connect(function(playerProfile, lastCFrame)
 		local primaryPart = playerProfile.Player.Character.PrimaryPart
 
