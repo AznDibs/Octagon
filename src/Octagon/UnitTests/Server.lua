@@ -2,6 +2,11 @@
 -- Server
 -- August 29, 2021
 
+--[[
+	Server.TestUtilModule() --> nil []
+	Server.TestPlayerProfileServiceModule() --> nil []
+]]
+
 local Server = {
 	_testsPassed = {
 		Util = {},
@@ -427,6 +432,8 @@ function Server.TestPlayerProfileServiceModule()
 	if #Server._testsFailed.PlayerProfileService > 0 then
 		warn(table.concat(Server._testsFailed.PlayerProfileService, "\n"))
 	end
+
+	return nil
 end
 
 function Server._checkTest(key, hasTestPassed, log)
