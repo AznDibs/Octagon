@@ -38,7 +38,6 @@ function Connection.new(signal, callBack)
 		_isConnected = true,
 		_signal = signal,
 		_isConnection = true,
-		_signalConnectionIndex = signal.ConnectedConnectionCount,
 	}, Connection)
 end
 
@@ -53,12 +52,13 @@ function Connection:Disconnect()
 	if self._signal.HandlerListHead == self then
 		self._signal.HandlerListHead = self.Next
 	else
-		local prev = self._signal.HandlerListHead
-		while prev and prev.Next ~= self do
-			prev = prev.Next
+		local previousHandlerListHead = self._signal.HandlerListHead
+		while previousHandlerListHead and previousHandlerListHead.Next ~= self do
+			previousHandlerListHead = previousHandlerListHead.Next
 		end
-		if prev then
-			prev.Next = self.Next
+
+		if previousHandlerListHead then
+			previousHandlerListHead.Next = self.Next
 		end
 	end
 
