@@ -22,7 +22,7 @@ Util.HasBasePartFallenToVoid(basePart : BasePart) --> boolean [HasBasePartFallen
 
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
-| `basePart : BasePart` | A BasePart object |
+| `basePart : BasePart` | A BasePart |
 
 Returns a boolean indicating if `basePart` has fallen to void, i.e `basePart.Position.Y` equals or is lower than [Workspace.FallenPartsDestroyHeight](https://developer.roblox.com/en-us/api-reference/property/Workspace/FallenPartsDestroyHeight).
 
@@ -36,7 +36,7 @@ Returns a boolean indicating if `basePart` is falling, i.e `basePart.Position.Y`
 
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
-| `basePart : BasePart` | A BasePart object |
+| `basePart : BasePart` | A BasePart |
 | `lastPosition : Vector3` | A Vector3 |
 
 ### `Util.IsInstanceDestroyed()`
@@ -61,7 +61,7 @@ Sets the network owner of `basePart` to `networkOwner`.
 
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
-| `basePart : BasePart` | A BasePart object |
+| `basePart : BasePart` | A BasePart |
 | `networkOwner : Player | nil` | A Player object or `nil` |
 
 !!!note
@@ -77,7 +77,7 @@ Returns the network owner of `basePart`.
 
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
-| `basePart : BasePart` | A BasePart object |
+| `basePart : BasePart` | A BasePart |
 
 !!!note
     This method will return `nil` if `basePart` is anchored.
