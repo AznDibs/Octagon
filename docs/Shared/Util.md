@@ -22,7 +22,7 @@ Util.HasBasePartFallenToVoid(basePart : BasePart) --> boolean [HasBasePartFallen
 
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
-| `basePart : BasePart` | A BasePart |
+| `basePart : BasePart` | A BasePart object |
 
 Returns a boolean indicating if `basePart` has fallen to void, i.e `basePart.Position.Y` equals or is lower than [Workspace.FallenPartsDestroyHeight](https://developer.roblox.com/en-us/api-reference/property/Workspace/FallenPartsDestroyHeight).
 
@@ -36,8 +36,8 @@ Returns a boolean indicating if `basePart` is falling, i.e `basePart.Position.Y`
 
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
-| `basePart : BasePart` | A BasePart |
-| `lastPosition : Vector3` | A Vector3 |
+| `basePart : BasePart` | A BasePart object |
+| `lastPosition : Vector3` | A Vector3 object |
 
 ### `Util.IsInstanceDestroyed()`
 
@@ -50,7 +50,7 @@ Returns a boolean indicating if `instance` is destroyed, i.e via [Instance:Destr
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
 | `instance : Instance` | An Instance |
-| `lastPosition : Vector3` | A Vector3 |
+| `lastPosition : Vector3` | A Vector3 object |
 
 ### `Util.SetBasePartNetworkOwner()`
 
@@ -62,8 +62,8 @@ Sets the network owner of `basePart` to `networkOwner`.
 
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
-| `basePart : BasePart` | A BasePart |
-| `lastPosition : Vector3` | A Vector3 |
+| `basePart : BasePart` | A BasePart object |
+| `lastPosition : Vector3` | A Vector3 object |
 
 !!!note
     This method will warn if the network ownership of `basePart` can't be set, along with the reason.
@@ -78,7 +78,7 @@ Returns the network owner of `basePart`.
 
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
-| `basePart : BasePart` | A BasePart |
+| `basePart : BasePart` | A BasePart object |
 
 !!!note
     This method will return `nil` if `basePart` is anchored.
@@ -94,7 +94,7 @@ Returns a boolean indicating if `player` is falling by comparing if `player.Char
 | Arguments      | Description                          |
 | ----------- | ------------------------------------ |
 | `player : Player` | A Player object |
-| `lastPosition : Vector3` | A Vector3 |
+| `lastPosition : Vector3` | A Vector3 object |
 
 !!!note
     This method will return `false` if `player`'s character isn't loaded.

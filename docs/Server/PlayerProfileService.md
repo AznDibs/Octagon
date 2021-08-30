@@ -36,7 +36,7 @@ end
 
 | Parameters      | Description                          |
 | ----------- | ------------------------------------ |
-| `player : Player` | The player object whose profile was destroyed |
+| `player : Player` | The Player object whose profile was destroyed |
 
 ### `PlayerProfileService.OnPlayerProfileInit`
 
