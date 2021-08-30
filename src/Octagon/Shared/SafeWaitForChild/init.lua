@@ -10,9 +10,45 @@
 local Signal = require(script.Signal)
 local Maid = require(script.Maid)
 
-local LocalConstants = { DefaultTimeout = 15 }
+local LocalConstants = {
+	DefaultTimeout = 15,
+	ErrorMessages = {
+		InvalidArgument = "Invalid argument#%d to %s: expected %s, got %s",
+	},
+}
 
 return function(instance, childName, timeOut)
+	assert(
+		typeof(instance) == "Instance",
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"SafeWaitForChild()",
+			"instance",
+			typeof(instance)
+		)
+	)
+	assert(
+		typeof(childName) == "string",
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			2,
+			"SafeWaitForChild()",
+			"string",
+			typeof(childName)
+		)
+	)
+
+	timeOut = timeOut or LocalConstants.DefaultTimeout
+ 
+	assert(
+		typeof(timeOut) == "number",
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			3,
+			"SafeWaitForChild()",
+			"number or nil",
+			typeof(timeOut)
+		)
+	)
+
 	if instance:FindFirstChild(childName) then
 		return instance[childName]
 	end
@@ -33,9 +69,9 @@ return function(instance, childName, timeOut)
 			signal:Fire(child)
 		end
 	end))
- 
+
 	task.spawn(function()
-		task.wait(timeOut or LocalConstants.DefaultTimeout)
+		task.wait(timeOut)
 		if not signal:IsDestroyed() then
 			signal:Fire(nil)
 		end
