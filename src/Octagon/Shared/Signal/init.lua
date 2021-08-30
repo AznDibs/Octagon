@@ -175,8 +175,7 @@ function Signal:WaitUntilArgumentsPassed(...)
 end
 
 function Signal:Fire(...)
-	-- Call signals in reverse order (end - start):
-
+	-- Call handlers in reverse order (end - start):
 	local connection = self.HandlerListHead
 
 	while connection do
@@ -197,8 +196,7 @@ function Signal:Fire(...)
 end
 
 function Signal:DeferredFire(...)
-	-- Call signals in reverse order (end - start), except deferred:
-
+	-- Call handlers in reverse order (end - start), except deferred:
 	local connection = self.HandlerListHead
 
 	while connection do

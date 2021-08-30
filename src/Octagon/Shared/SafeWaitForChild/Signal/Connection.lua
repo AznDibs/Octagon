@@ -42,7 +42,6 @@ function Connection.new(signal, callBack)
 end
 
 function Connection:Disconnect()
-	self._isConnected = false
 	self._signal.ConnectedConnectionCount -= 1
 
 	-- Unhook the node, but DON'T clear it. That way any fire calls that are
@@ -62,7 +61,7 @@ function Connection:Disconnect()
 		end
 	end
 
-	ClearReferenceTypes(self)
+	ClearReferenceTypes(self, { "Next" })
 	self._connected = false
 
 	setmetatable(self, {
