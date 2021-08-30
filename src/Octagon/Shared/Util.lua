@@ -132,7 +132,7 @@ function Util.IsBasePartFalling(basePart, lastPosition)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			2,
 			"Util.IsBasePartFalling()",
-			"a Vector3 object",
+			"a Vector3",
 			typeof(basePart)
 		)
 	)
@@ -156,7 +156,7 @@ function Util.IsPlayerWalking(player, lastPosition)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			2,
 			"Util.IsPlayerWalking()",
-			"a Vector3 object",
+			"a Vector3",
 			typeof(lastPosition)
 		)
 	)
