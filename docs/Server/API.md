@@ -22,7 +22,7 @@ An dictionary of all player profiles being monitored by Octagon.
 Octagon.BlacklistedPlayers : table  
 ```
 
-An array of all players blacklisted from monitored by Octagon.
+An array of all players blacklisted from being monitored by Octagon.
 
 ### `Octagon.Start()`
 ```lua
@@ -45,7 +45,7 @@ Cleans up all maids in use, destroys all loaded player profiles and stops monito
 Octagon.IsStarted() --> boolean [IsStarted]
 ```
 
-Returns a boolean indicating if Octagon is started through [Octagon.Start()](https://silentsreplacement.github.io/Octagon/Server/API/#octagonstart).
+Returns a boolean indicating if Octagon is started.
 
 ### `Octagon.IsStopped()`
 
@@ -53,7 +53,7 @@ Returns a boolean indicating if Octagon is started through [Octagon.Start()](htt
 Octagon.IsStopped() --> boolean [IsStopped]
 ```
 
-Returns a boolean indicating if Octagon is stopped through [Octagon.Stop()]https://silentsreplacement.github.io/Octagon/Server/API/#octagonstop).
+Returns a boolean indicating if Octagon is stopped.
 
 ### `Octagon.IsPlayerGameOwner()`
 
