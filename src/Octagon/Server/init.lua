@@ -4,6 +4,7 @@
 
 --[[
 	Server.MonitoringPlayerProfiles : table
+	Server.BlacklistedPlayers : table
 
     Server.Start() --> nil []
     Server.Stop() --> nil []
@@ -21,6 +22,7 @@
 
 local Server = {
 	MonitoringPlayerProfiles = {},
+	BlacklistedPlayers = {},
 
 	_detectionsInit = {
 		Physics = {},
@@ -337,10 +339,12 @@ function Server.Start()
 
 	do
 		local function PlayerAdded(player)
-			if
-				not Server._shouldMonitorPlayer(player)
-				or not next(Server._detectionsInit.Physics)
-					and not next(Server._detectionsInit.NonPhysics)
+			if not Server._shouldMonitorPlayer(player) then
+				table.insert(Server.BlacklistedPlayers, player)
+				return nil
+			elseif
+				not next(Server._detectionsInit.Physics)
+				and not next(Server._detectionsInit.NonPhysics)
 			then
 				return nil
 			end
@@ -396,6 +400,10 @@ function Server.Start()
 			local playerProfile = PlayerProfileService.GetPlayerProfile(player)
 
 			if not playerProfile then
+				table.remove(
+					Server.BlacklistedPlayers,
+					table.find(Server.BlacklistedPlayers, player)
+				)
 				return nil
 			end
 
@@ -441,6 +449,8 @@ function Server.Stop()
 end
 
 function Server._cleanup()
+	Server.BlacklistedPlayers = {}
+
 	for _, playerProfile in pairs(PlayerProfileService.LoadedPlayerProfiles) do
 		local activePhysicsDetectionFlag = playerProfile:GetCurrentActivePhysicsDetectionFlag()
 		if activePhysicsDetectionFlag then

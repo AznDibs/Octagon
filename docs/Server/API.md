@@ -16,6 +16,14 @@ Octagon.MonitoringPlayerProfiles : table
 
 An dictionary of all player profiles being monitored by Octagon.
 
+### `Octagon.BlacklistedPlayers` 
+
+```lua
+Octagon.BlacklistedPlayers : table  
+```
+
+An array of all players blacklisted from monitored by Octagon.
+
 ### `Octagon.Start()`
 ```lua
 Octagon.Start() --> nil []
