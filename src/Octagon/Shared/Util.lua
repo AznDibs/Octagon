@@ -53,7 +53,7 @@ function Util.GetBasePartNetworkOwner(basePart)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.GetBasePartNetworkOwner()",
-			"a BasePart object",
+			"a BasePart",
 			typeof(basePart)
 		)
 	)
@@ -71,7 +71,7 @@ function Util.SetBasePartNetworkOwner(basePart, networkOwner)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.SetBasePartNetworkOwner()",
-			"a BasePart object",
+			"a BasePart",
 			typeof(basePart)
 		)
 	)
@@ -109,7 +109,7 @@ function Util.HasBasePartFallenToVoid(basePart)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.HasBasePartFallenToVoid()",
-			"a BasePart object",
+			"a BasePart",
 			typeof(basePart)
 		)
 	)
@@ -123,7 +123,7 @@ function Util.IsBasePartFalling(basePart, lastPosition)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Util.IsBasePartFalling()",
-			"a BasePart object",
+			"a BasePart",
 			typeof(basePart)
 		)
 	)
