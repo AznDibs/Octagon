@@ -22,11 +22,10 @@ local Server = {
 	},
 }
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
-local Octagon = require(ReplicatedStorage.Octagon)
+local Octagon = require(script.Parent)
 local PlayerProfileService = require(Octagon.PlayerProfileService)
 local PlayerProfile = require(PlayerProfileService.PlayerProfile)
 local Util = require(Octagon.Shared.Util)
