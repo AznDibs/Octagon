@@ -9,7 +9,7 @@
 	-- Only when accessed from an object returned by Signal.new:
 
 	Signal.ConnectedConnectionCount : number
-	Signal.Connections : table
+	Signal.HandlerListHead : function | nli
 
 	Signal:Connect(callBack : function) --> Connection []
 	Signal:Fire(tuple : any) --> nil []
@@ -33,6 +33,7 @@ local LocalConstants = {
 	AlwaysAvailableMethods = {
 		"IsDestroyed",
 	},
+
 	ErrorMessages = {
 		InvalidArgument = "Invalid argument#%d to %s: expected %s, got %s",
 	},
@@ -223,6 +224,8 @@ function Signal._acquireRunnerThreadAndCallEventHandler(callBack, ...)
 
 	callBack(...)
 	Signal._freeRunnerThread = acquiredRunnerThread
+
+	return nil
 end
 
 function Signal._runEventHandlerInFreeThread(...)
@@ -230,6 +233,8 @@ function Signal._runEventHandlerInFreeThread(...)
 	while true do
 		Signal._acquireRunnerThreadAndCallEventHandler(coroutine.yield())
 	end
+
+	return nil
 end
 
 return Signal
