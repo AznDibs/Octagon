@@ -46,7 +46,7 @@ function PlayerProfileService.GetPlayerProfile(player)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"PlayerProfileService.GetPlayerProfile()",
-			"player",
+			"a Player object",
 			typeof(player)
 		)
 	)
