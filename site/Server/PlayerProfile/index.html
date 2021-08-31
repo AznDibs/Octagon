@@ -772,15 +772,6 @@
                 
                 <h1 id="playerprofile">PlayerProfile</h1>
 <p>A player profile in layman's terms, is simply a table which contains necessary data for Octagon and the developer to work with. </p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>When a player's profile is destroyed internally, i.e whenever they leave the game, most of the members will be not accessible and only some methods will be calleable on the profile.</p>
-<p>Here is the list of the methods / members safe to access even if the profile is destroyed:</p>
-<ul>
-<li><a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofilephysicsdetectionflagcount">PlayerProfile.PhysicsDetectionFlagCount</a></li>
-<li><a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileisdestroyed">PlayerProfile:IsDestroyed()</a></li>
-</ul>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To retrieve a player profile, only use <a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfileService/#playerprofileservicegetplayerprofile">PlayerProfileService.GetPlayerProfile()</a>.</p>
@@ -788,20 +779,6 @@
 <h3 id="playerprofileisplayerprofile"><code>PlayerProfile.IsPlayerProfile()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">IsPlayerProfile</span><span class="p">(</span><span class="n">self</span> <span class="p">:</span> <span class="n">any</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerProfile]</span>
 </code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>self : any</code></td>
-<td>Any value</td>
-</tr>
-</tbody>
-</table>
 <p>Returns a boolean indicating if <code>self</code> is a player profile.</p>
 <hr />
 <h3 id="only-accessible-from-an-object-created-by-the-playerprofilenew"><strong><code>Only accessible from an object created by the PlayerProfile.new:</code></strong></h3>

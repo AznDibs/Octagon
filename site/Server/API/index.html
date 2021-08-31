@@ -776,20 +776,6 @@
 <div class="highlight"><pre><span></span><code><span class="n">Octagon</span><span class="p">.</span><span class="n">IsPlayerGameOwner</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerGameOwner]</span>
 </code></pre></div>
 <p>Returns a boolean indicating if the player is the owner of the game or the owner of the group the game is in.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>player : Player</code></td>
-<td>The player to determine if they are the owner of the game</td>
-</tr>
-</tbody>
-</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method may temporarily yield the thread if the game is under a group as it will send an GET HTTP request to retrieve <code>player</code>'s rank in order to determine if <code>player</code> is the owner of that group.</p>
@@ -799,38 +785,18 @@
 </code></pre></div>
 <p>Iterates through <code>parts</code> and adds a noclip black listed tag which will allow players to pass
 through those parts even if they aren't <code>CanCollide</code> <code>true</code> on the server.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>parts : table</code></td>
-<td>An array of base parts</td>
-</tr>
-</tbody>
-</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method ignores parts that aren't BaseParts.</p>
+</div>
 <h3 id="octagonunblacklistnoclipmonitoringparts"><code>Octagon.UnBlacklistNoClipMonitoringParts()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">Octagon</span><span class="p">.</span><span class="n">UnBlacklistNoClipMonitoringParts</span><span class="p">(</span><span class="n">parts</span> <span class="p">:</span> <span class="n">table</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
 </code></pre></div>
 <p>Iterates through <code>parts</code> and removes the noclip black listed tag.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>parts : table</code></td>
-<td>An array of base parts</td>
-</tr>
-</tbody>
-</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method ignores parts that aren't BaseParts.</p>
+</div>
 <h3 id="octagontemporarilyblacklistplayerfrombeingmonitored"><code>Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">Octagon</span><span class="p">.</span><span class="n">TemporarilyBlacklistPlayerFromBeingMonitored</span><span class="p">(</span>
     <span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">,</span>
@@ -868,20 +834,6 @@ through those parts even if they aren't <code>CanCollide</code> <code>true</code
 <div class="highlight"><pre><span></span><code><span class="n">Server</span><span class="p">.</span><span class="n">IsPlayerSubjectToBeMonitored</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerSubjectToBeMonitored]</span>
 </code></pre></div>
 <p>Returns a boolean indicating if <code>player</code> is going to be monitored by Octagon.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>player : Player</code></td>
-<td>The player to determine if they are subject to be monitored by Octagon</td>
-</tr>
-</tbody>
-</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method may temporarily yield the thread as it checks to see if the player is black listed through the <a href="https://github.com/SilentsReplacement/Octagon/blob/v0.1/src/Octagon/Server/Config.lua">Config</a> module which may send an GET HTTP request to retrieve the player's rank.</p>
