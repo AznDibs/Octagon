@@ -16,10 +16,6 @@ PlayerProfileService.OnPlayerProfileLoaded:Connect(function(playerProfile)
 end
 ```
 
-| Parameters      | Description                          |
-| ----------- | ------------------------------------ |
-| `playerProfile : PlayerProfile` | The player profile that was loaded |
-
 ### `PlayerProfileService.OnPlayerProfileDestroyed`
 
 ```lua
@@ -34,10 +30,6 @@ PlayerProfileService.OnPlayerProfileDestroyed:Connect(function(player)
 end
 ```
 
-| Parameters      | Description                          |
-| ----------- | ------------------------------------ |
-| `player : Player` | The Player object whose profile was destroyed |
-
 ### `PlayerProfileService.OnPlayerProfileInit`
 
 ```lua
@@ -45,10 +37,6 @@ PlayerProfileService.OnPlayerProfileInit : Signal (playerProfile : PlayerProfile
 ```
 
 A signal which is fired whenever a player's profile is init through [PlayerProfile:Init](https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileinit).
-
-| Parameters      | Description                          |
-| ----------- | ------------------------------------ |
-| `playerProfile : PlayerProfile` | The player profile that was init |
 
 ### `PlayerProfileService.LoadedPlayerProfiles`
 
@@ -65,10 +53,6 @@ PlayerProfileService.GetPlayerProfile(player : Player) --> PlayerProfile | nil [
 ```
 
 Returns the player profile.
-
-| Arguments      | Description                          |
-| ----------- | ------------------------------------ |
-| `player : Player` | A Player object |
 
 !!!note
     - This method may temporarily yield the thread if the profile isn't initialized yet or not loaded in time.

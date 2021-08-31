@@ -25,7 +25,7 @@ local Server = {
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
-local Octagon = require(script.Parent)
+local Octagon = require(script.Parent.Parent)
 local PlayerProfileService = require(Octagon.PlayerProfileService)
 local PlayerProfile = require(PlayerProfileService.PlayerProfile)
 local Util = require(Octagon.Shared.Util)

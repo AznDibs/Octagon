@@ -54,30 +54,30 @@ return function(instance, childName, timeOut)
 	end
 
 	local maid = Maid.new()
-	local signal = Signal.new()
+	local onChildAdded = Signal.new()
 
-	maid:AddTask(signal)
+	maid:AddTask(onChildAdded)
 
 	maid:AddTask(instance:GetPropertyChangedSignal("Parent"):Connect(function(_, parent)
-		if not parent and not signal:IsDestroyed() then
-			signal:Fire(nil)
+		if not parent and not onChildAdded:IsDestroyed() then
+			onChildAdded:Fire(nil)
 		end
 	end))
 
 	maid:AddTask(instance.ChildAdded:Connect(function(child)
-		if child.Name == childName and not signal:IsDestroyed() then
-			signal:Fire(child)
+		if child.Name == childName and not onChildAdded:IsDestroyed() then
+			onChildAdded:Fire(child)
 		end
 	end))
 
 	task.spawn(function()
 		task.wait(timeOut)
-		if not signal:IsDestroyed() then
-			signal:Fire(nil)
+		if not onChildAdded:IsDestroyed() then
+			onChildAdded:Fire(nil)
 		end
 	end)
 
-	local returnValues = { signal:Wait() }
+	local returnValues = { onChildAdded:Wait() }
 	maid:Destroy()
 
 	return table.unpack(returnValues)

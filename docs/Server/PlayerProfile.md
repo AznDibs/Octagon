@@ -2,14 +2,6 @@
 
 A player profile in layman's terms, is simply a table which contains necessary data for Octagon and the developer to work with. 
 
-!!!warning
-    When a player's profile is destroyed internally, i.e whenever they leave the game, most of the members will be not accessible and only some methods will be calleable on the profile.
-
-    Here is the list of the methods / members safe to access even if the profile is destroyed:
-
-    - [PlayerProfile.PhysicsDetectionFlagCount](https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofilephysicsdetectionflagcount)
-    - [PlayerProfile:IsDestroyed()](https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileisdestroyed)
-
 !!!note
     To retrieve a player profile, only use [PlayerProfileService.GetPlayerProfile()](https://silentsreplacement.github.io/Octagon/Server/PlayerProfileService/#playerprofileservicegetplayerprofile).
 
@@ -19,11 +11,7 @@ A player profile in layman's terms, is simply a table which contains necessary d
 PlayerProfile.IsPlayerProfile(self : any) --> boolean [IsPlayerProfile]
 ```
 
-| Arguments      | Description                          |
-| ----------- | ------------------------------------ |
-| `self : any` | Any value |
-
-Returns a boolean indicating if `self` is a player profile or not.
+Returns a boolean indicating if `self` is a player profile.
 
 ---
 
@@ -81,45 +69,32 @@ PlayerProfile.OnPhysicsDetectionFlag : Signal (detectionFlag : string)
 A signal which is fired whenever the player is flagged by a detection through [PlayerProfile:RegisterPhysicsDetectionFlag](https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileregisterphysicsdetectionflag). 
 
 ```lua
-PlayerProfile.OnPhysicsDetectionFlag:Connect(function(flag) 
-    warn(("%s was flagged for %s"):format(PlayerProfile.Player, flag)) 
+PlayerProfile.OnPhysicsDetectionFlag:Connect(function(detectionFlag) 
+    warn(("%s was flagged for %s"):format(PlayerProfile.Player, detectionFlag)) 
 end) 
 ```
-
-| Parameters      | Description                          |
-| ----------- | ------------------------------------ |
-| `flag : string` | The flag by the detection (for e.g `HighHorizontalSpeed`, `HighVerticalSpeed`) |
 
 ### `PlayerProfile.OnPhysicsDetectionFlagExpire`
 
 ```lua
-PlayerProfile.OnPhysicsDetectionFlagExpire : Signal (expiredFlag : string)
+PlayerProfile.OnPhysicsDetectionFlagExpire : Signal (expiredDetectionFlag : string)
 ```
 
 A signal which is fired whenever the player's flag by a physics detection is expired periodically. When this signal is fired, the physics detections by default, will give back the network ownership from the server to the player and return the player to a normal state.
 
 ```lua
-PlayerProfile.OnPhysicsDetectionFlagExpire:Connect(function(expiredFlag) 
-    warn(("%s's %s flag has been expired"):format(PlayerProfile.Player, expiredFlag)) 
+PlayerProfile.OnPhysicsDetectionFlagExpire:Connect(function(expiredDetectionFlag) 
+    warn(("%s's %s flag has been expired"):format(PlayerProfile.Player, expiredDetectionFlag)) 
 end) 
 ```
-
-| Parameters      | Description                          |
-| ----------- | ------------------------------------ |
-| `expiredFlag : string` | The now expired flag by the detection (for e.g `HighHorizontalSpeed`, `HighVerticalSpeed`) |
 
 ### `PlayerProfile:RegisterPhysicsDetectionFlag()`
 
 ```lua 
-PlayerProfile:RegisterPhysicsDetectionFlag(detectionName : string, flag : string) --> nil []
+PlayerProfile:RegisterPhysicsDetectionFlag(detection : string, flag : string) --> nil []
 ```
 
 Register a new flag, incrementing [PlayerProfile.PhysicsDetectionFlagCount](https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofilephysicsdetectionflagcount) by 1 and adds `flag` to the player profile's physics detection history and fires [PlayerProfile.OnPhysicsDetectionFlag](https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileonphysicsdetectionflag) passing in `flag` as the argument.
-
-| Arguments      | Description                          |
-| ----------- | ------------------------------------ |
-| `detectionName : string` | The exact name of the physics detection |
-| `flag : string` | The flag by the detection, for e.g `HighHorizontalSpeed`, `HighVerticalSpeed`. |
 
 ### `PlayerProfile:IsDestroyed()`
 
@@ -146,11 +121,6 @@ humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
 end)
 ```
 
-| Arguments      | Description                          |
-| ----------- | ------------------------------------ |
-| `physicsThreshold : string` | A value which can be either `VerticalSpeed` or `HorizontalSpeed`  |
-| `thresholdIncrement : number` | The value to increment the threshold by |
-
 !!!warning
     This method will throw an error if the detection it self for `physicsThreshold` doesn't exist or isn't enabled.
 
@@ -161,11 +131,6 @@ PlayerProfile:DecrementPhysicsThreshold(physicsThreshold : string, thresholdDecr
 ```
 
 Decrements the threshold for `physicsThreshold` by `thresholdDecrement`. 
-
-| Arguments      | Description                          |
-| ----------- | ------------------------------------ |
-| `physicsThreshold : string` | A value which can be either `VerticalSpeed` or `HorizontalSpeed` (if the detections for them are enabled) |
-| `thresholdIncrement : number` | The value to decrement the threshold by |
 
 !!!warning
     This method will throw an error if the detection it self for `physicsThreshold` doesn't exist or isn't enabled.
@@ -189,10 +154,6 @@ PlayerProfile:GetPhysicsThresholdIncrement(physicsThreshold : string) --> number
 ```
 
 Returns the threshold increment for `physicsThreshold`.
-
-| Arguments      | Description                          |
-| ----------- | ------------------------------------ |
-| `physicsThreshold : string` | A value which can be either `VerticalSpeed` or `HorizontalSpeed` (if the detections for them are enabled) |
 
 !!!note
     This method will return `nil` if the detection for `physicsThreshold` doesn't exist or isn't enabled.

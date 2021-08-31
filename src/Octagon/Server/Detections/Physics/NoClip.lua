@@ -35,7 +35,7 @@ local SharedConstants = require(Shared.SharedConstants)
 local Signal = require(Shared.Signal)
 local Maid = require(Shared.Maid)
 local InitMaidFor = require(Shared.InitMaidFor)
-local DestroyAll = require(Shared.DestroyAll)
+local DestroyAllMaids = require(Shared.DestroyAllMaids)
 
 NoClip._maid = Maid.new()
 NoClip._onPlayerDetection = Signal.new()
@@ -57,7 +57,7 @@ function NoClip.Start(detectionData, playerProfile, _)
 end
 
 function NoClip.Cleanup()
-	DestroyAll(NoClip, Maid.IsMaid)
+	DestroyAllMaids(NoClip)
 
 	return nil
 end

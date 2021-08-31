@@ -32,7 +32,7 @@ local SharedConstants = require(Shared.SharedConstants)
 local Signal = require(Shared.Signal)
 local Maid = require(Shared.Maid)
 local InitMaidFor = require(Shared.InitMaidFor)
-local DestroyAll = require(Shared.DestroyAll)
+local DestroyAllMaids = require(Shared.DestroyAllMaids)
 
 VerticalSpeed._maid = Maid.new()
 VerticalSpeed._onPlayerDetection = Signal.new()
@@ -68,7 +68,7 @@ function VerticalSpeed.Start(detectionData, playerProfile, dt)
 end
 
 function VerticalSpeed.Cleanup()
-	DestroyAll(VerticalSpeed, Maid.IsMaid)
+	DestroyAllMaids(VerticalSpeed)
 
 	return nil
 end

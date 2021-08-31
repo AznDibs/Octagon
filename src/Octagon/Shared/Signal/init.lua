@@ -9,7 +9,7 @@
 	-- Only when accessed from an object returned by Signal.new:
 
 	Signal.ConnectedConnectionCount : number
-	Signal.HandlerListHead : function | nli
+	Signal.ConnectionListHead : function | nli
 
 	Signal:Connect(callBack : function) --> Connection []
 	Signal:Fire(tuple : any) --> nil []
@@ -25,13 +25,13 @@ local Signal = { _freeRunnerThread = nil }
 Signal.__index = Signal
 
 local Connection = require(script.Connection)
-local ClearReferenceTypes = require(script.ClearReferenceTypes)
 
 local LocalConstants = {
-	MinMultipleReturnValueCount = 2,
-	MinMultipleArgumentCount = 2,
-	AlwaysAvailableMethods = {
-		"IsDestroyed",
+	MinArgumentCount = 1,
+	Methods = {
+		AlwaysAvailable = {
+			"IsDestroyed",
+		},
 	},
 
 	ErrorMessages = {
@@ -46,7 +46,7 @@ end
 function Signal.new()
 	return setmetatable({
 		ConnectedConnectionCount = 0,
-		HandlerListHead = nil,
+		ConnectionListHead = nil,
 		_isDestroyed = false,
 		_isSignal = true,
 	}, Signal)
@@ -65,18 +65,18 @@ function Signal:Connect(callBack)
 
 	local connection = Connection.new(self, callBack)
 
-	if self.HandlerListHead then
-		connection.Next = self.HandlerListHead
-		self.HandlerListHead = connection
+	if self.ConnectionListHead ~= nil then
+		connection.Next = self.ConnectionListHead
+		self.ConnectionListHead = connection
 	else
-		self.HandlerListHead = connection
+		self.ConnectionListHead = connection
 	end
 
 	return connection
 end
 
 function Signal:DisconnectAllConnections()
-	self.HandlerListHead = nil
+	self.ConnectionListHead = nil
 
 	return nil
 end
@@ -89,16 +89,13 @@ function Signal:Destroy()
 	self:DisconnectAllConnections()
 	self._isDestroyed = true
 
-	-- Set only reference type keys/values to nil:
-	ClearReferenceTypes(self)
-
 	setmetatable(self, {
 		__index = function(_, key)
 			if typeof(Signal[key]) == "function" then
 				assert(
-					table.find(LocalConstants.AlwaysAvailableMethods, key),
+					table.find(LocalConstants.Methods.AlwaysAvailable, key) ~= nil,
 					("Can only call methods [%s] as signal is destroyed"):format(
-						table.concat(LocalConstants.AlwaysAvailableMethods)
+						table.concat(LocalConstants.Methods.AlwaysAvailable)
 					)
 				)
 
@@ -125,30 +122,26 @@ function Signal:Wait()
 
 	local returnValues = { coroutine.yield() }
 
-	if next(returnValues) ~= nil then
-		return table.unpack(returnValues)
+	-- Prevent no return values:
+	if #returnValues >= LocalConstants.MinArgumentCount then
+		return returnValues[1]
 	else
-		return nil
+		return table.unpack(returnValues)
 	end
 end
 
 function Signal:WaitUntilArgumentsPassed(...)
 	local expectedArguments = { ... }
 
-	if #expectedArguments < LocalConstants.MinMultipleArgumentCount then
-		expectedArguments = table.unpack(expectedArguments)
-	end
-
 	while true do
 		-- Signal:Wait() returns any arguments passed to Signal:Fire()
 		local returnValues = { self:Wait() }
 
-		if #returnValues < LocalConstants.MinMultipleReturnValueCount then
-			returnValues = table.unpack(returnValues)
-		end
-
 		-- Case of multiple return and expected return values:
-		if typeof(returnValues) == "table" and typeof(expectedArguments) == "table" then
+		if
+			#returnValues > LocalConstants.MinArgumentCount
+			and #expectedArguments > LocalConstants.MinArgumentCount
+		then
 			local areReturnValuesEqual = true
 
 			for index, returnValue in ipairs(returnValues) do
@@ -160,14 +153,13 @@ function Signal:WaitUntilArgumentsPassed(...)
 			if areReturnValuesEqual then
 				return expectedArguments
 			end
-
-			-- Case of just 1 expected and return value:
-		elseif typeof(returnValues) ~= "table" and typeof(expectedArguments) ~= "table" then
-			if returnValues == expectedArguments then
+		else
+			if returnValues[1] == expectedArguments[1] then
 				return expectedArguments
 			end
 		end
 
+		-- Prevent script execution timout incase of any thread concurrency issues:
 		task.wait()
 	end
 
@@ -176,9 +168,9 @@ end
 
 function Signal:Fire(...)
 	-- Call handlers in reverse order (end - start):
-	local connection = self.HandlerListHead
+	local connection = self.ConnectionListHead
 
-	while connection do
+	while connection ~= nil do
 		if connection:IsConnected() then
 			if not Signal._freeRunnerThread then
 				Signal._freeRunnerThread = coroutine.create(
@@ -196,8 +188,9 @@ function Signal:Fire(...)
 end
 
 function Signal:DeferredFire(...)
-	-- Call handlers in reverse order (end - start), except deferred:
-	local connection = self.HandlerListHead
+	-- Call handlers in reverse order (end - start), except at a very slightly later
+	-- time (next engine step):
+	local connection = self.ConnectionListHead
 
 	while connection do
 		if connection:IsConnected() then
@@ -207,7 +200,7 @@ function Signal:DeferredFire(...)
 				)
 			end
 
-			task.defer(Signal._freeRunnerThread, connection.Callback, ...)
+			task.spawn(Signal._freeRunnerThread, connection.Callback, ...)
 		end
 
 		connection = connection.Next

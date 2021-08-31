@@ -7,6 +7,7 @@
 	Connection.IsConnection(self : any) --> boolean [IsConnection]
 	
 	Connection.Callback : function
+	Connection.Next : Connection | nil
 
 	-- Only when accessed from an object returned by Connection.new:
 	
@@ -17,11 +18,11 @@
 local Connection = {}
 Connection.__index = Connection
 
-local ClearReferenceTypes = require(script.Parent.ClearReferenceTypes)
-
 local LocalConstants = {
-	AlwaysAvailableMethods = {
-		"IsConnected",
+	Methods = {
+		AlwaysAvailable = {
+			"IsConnected",
+		},
 	},
 }
 
@@ -43,34 +44,32 @@ end
 
 function Connection:Disconnect()
 	self._signal.ConnectedConnectionCount -= 1
+	self._connected = false
 
 	-- Unhook the node, but DON'T clear it. That way any fire calls that are
 	-- currently sitting on this node will be able to iterate forwards off of
 	-- it, but any subsequent fire calls will not hit it, and it will be GCed
 	-- when no more fire calls are sitting on it.
-	if self._signal.HandlerListHead == self then
-		self._signal.HandlerListHead = self.Next
+	if self._signal.ConnectionListHead == self then
+		self._signal.ConnectionListHead = self.Next
 	else
-		local previousHandlerListHead = self._signal.HandlerListHead
-		while previousHandlerListHead and previousHandlerListHead.Next ~= self do
-			previousHandlerListHead = previousHandlerListHead.Next
+		local previousConnectionListHead = self._signal.ConnectionListHead
+		while previousConnectionListHead ~= nil and previousConnectionListHead.Next ~= self do
+			previousConnectionListHead = previousConnectionListHead.Next
 		end
 
-		if previousHandlerListHead then
-			previousHandlerListHead.Next = self.Next
+		if previousConnectionListHead ~= nil then
+			previousConnectionListHead.Next = self.Next
 		end
 	end
-
-	ClearReferenceTypes(self, { "Next" })
-	self._connected = false
 
 	setmetatable(self, {
 		__index = function(_, key)
 			if typeof(Connection[key]) == "function" then
 				assert(
-					table.find(LocalConstants.AlwaysAvailableMethods, key),
+					table.find(LocalConstants.Methods.AlwaysAvailable, key) ~= nil,
 					("Can only call methods [%s] as connection is disconnected"):format(
-						table.concat(LocalConstants.AlwaysAvailableMethods)
+						table.concat(LocalConstants.Methods.AlwaysAvailable)
 					)
 				)
 

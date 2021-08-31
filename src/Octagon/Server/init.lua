@@ -50,7 +50,7 @@ local Maid = require(script.Parent.Shared.Maid)
 local RetryPcall = require(script.Parent.Shared.RetryPcall)
 local Config = require(script.Config)
 local SharedConstants = require(script.Parent.Shared.SharedConstants)
-local DestroyAll = require(script.Parent.Shared.DestroyAll)
+local DestroyAllMaids = require(script.Parent.Shared.DestroyAllMaids)
 local InitMaidFor = require(script.Parent.Shared.InitMaidFor)
 local Util = require(script.Parent.Shared.Util)
 
@@ -74,7 +74,7 @@ function Server.IsPlayerGameOwner(player)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Octagon.IsPlayerGameOwner()",
-			"a Player object",
+			"Player",
 			typeof(player)
 		)
 	)
@@ -118,7 +118,7 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()",
-			"a Player object",
+			"Player",
 			typeof(player)
 		)
 	)
@@ -132,7 +132,7 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 			2,
 			"Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()",
 			"number or RBXScriptSignal or Signal or function",
-			typeof(player)
+			typeof(value)
 		)
 	)
 
@@ -203,7 +203,7 @@ function Server.IsPlayerSubjectToBeMonitored(player)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"Octagon.IsPlayerSubjectToBeMonitored()",
-			"a Player object",
+			"Player",
 			typeof(player)
 		)
 	)
@@ -327,10 +327,10 @@ function Server.UnBlacklistNoClipMonitoringParts(parts)
 end
 
 function Server.Start()
-	local PlayerProfile = require(PlayerProfileService.PlayerProfile)
-
 	assert(not Server.IsStopped(), "Can't start Octagon as Octagon is stopped")
 	assert(not Server.IsStarted(), "Can't start Octagon as Octagon is already started")
+
+	local PlayerProfile = require(PlayerProfileService.PlayerProfile)
 
 	Server._isStarted = true
 	Server._init()
@@ -453,7 +453,7 @@ function Server._cleanup()
 
 	for _, playerProfile in pairs(PlayerProfileService.LoadedPlayerProfiles) do
 		local activePhysicsDetectionFlag = playerProfile:GetCurrentActivePhysicsDetectionFlag()
-		if activePhysicsDetectionFlag then
+		if activePhysicsDetectionFlag ~= nil then
 			playerProfile.DetectionData[activePhysicsDetectionFlag].FlagExpireDt = 0
 			playerProfile.OnPhysicsDetectionFlagExpire:Fire()
 		end
@@ -461,7 +461,7 @@ function Server._cleanup()
 
 	PlayerProfileService.DestroyLoadedPlayerProfiles()
 	Server._cleanupDetections()
-	DestroyAll(Server, Maid.IsMaid)
+	DestroyAllMaids(Server)
 
 	return nil
 end
@@ -593,7 +593,7 @@ function Server._heartBeatUpdate(dt, verticalSpeed, horizontalSpeed)
 			local shouldStartDetection = true
 
 			if lastStartDt >= detection.StartInterval then
-				if lastCFrame then
+				if lastCFrame ~= nil then
 					-- Safe check to avoid false positives:
 					if
 						Util.IsBasePartFalling(primaryPart, lastCFrame.Position)

@@ -19,7 +19,7 @@ local Util = require(Shared.Util)
 local Signal = require(Shared.Signal)
 local Maid = require(Shared.Maid)
 local InitMaidFor = require(Shared.InitMaidFor)
-local DestroyAll = require(Shared.DestroyAll)
+local DestroyAllMaids = require(Shared.DestroyAllMaids)
 
 local LocalConstants = { MaxEquippedToolCount = 1 }
 
@@ -78,7 +78,7 @@ function MultiToolEquip.Start(playerProfile)
 end
 
 function MultiToolEquip.Cleanup()
-	DestroyAll(MultiToolEquip, Maid.IsMaid)
+	DestroyAllMaids(MultiToolEquip)
 
 	return nil
 end

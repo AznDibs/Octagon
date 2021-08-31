@@ -36,14 +36,6 @@ local LocalConstants = {
 		},
 	},
 
-	ReferenceTypes = {
-		"table",
-		"Instance",
-		"string",
-		"thread",
-		"function",
-	},
-
 	ErrorMessages = {
 		InvalidArgument = "Invalid argument#%d to %s: expected %s, got %s",
 	},
@@ -73,13 +65,41 @@ function Maid:AddTask(task, customCleanupMethod, identifier)
 			typeof(task)
 		)
 	)
+	assert(
+		typeof(customCleanupMethod) == "string" or customCleanupMethod == nil,
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			2,
+			"Maid.new()",
+			"string or nil",
+			typeof(customCleanupMethod)
+		)
+	)
+	assert(
+		typeof(identifier) == "string" or identifier == nil,
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			3,
+			"Maid.new()",
+			"string or nil",
+			typeof(identifier)
+		)
+	)
 
 	if typeof(task) == "table" then
 		task = {
 			Task = task,
 			CustomCleanupMethod = customCleanupMethod,
-			Identifier = identifier,
+			Identifier = identifier or tostring(task),
 		}
+
+		if customCleanupMethod then
+			assert(
+				typeof(task[customCleanupMethod]) == "function",
+				("Cleanup method [%s] not found in task: %s"):format(
+					customCleanupMethod,
+					task.Identifier
+				)
+			)
+		end
 	end
 
 	self._tasks[task] = task
@@ -113,18 +133,6 @@ function Maid:Destroy()
 	self:Cleanup()
 	self._isDestroyed = true
 
-	-- Set only reference type keys/values to nil:
-	for key, value in pairs(self) do
-		if
-			table.find(LocalConstants.ReferenceTypes, typeof(key))
-			and not table.find(LocalConstants.ReferenceTypes, typeof(value))
-		then
-			continue
-		end
-
-		self[key] = nil
-	end
-
 	setmetatable(self, {
 		__index = function(_, key)
 			if typeof(Maid[key]) == "function" then
@@ -157,15 +165,15 @@ function Maid:Cleanup()
 			if customCleanupMethod then
 				customCleanupMethod(task.Task)
 			else
-				local defaultMethod = task.Task[Maid._getDefaultMethod(task.Task)]
+				local defaultMethod = Maid._getDefaultMethod(task.Task)
 
-				if defaultMethod then
-					defaultMethod(task.Task)
+				if defaultMethod ~= nil then
+					task.Task[defaultMethod](task.Task)
 				else
 					warn(
 						(
-							"[Maid] [Debug]: Task [%s] can't be cleaned up as no default or custom method was found"
-						):format(task.Identifier or tostring(task))
+							"[Maid]: Can't cleanup task: %s as no default / custom method was found"
+						):format(task.Identifier)
 					)
 				end
 			end
@@ -179,7 +187,7 @@ end
 
 function Maid._getDefaultMethod(task)
 	for _, method in pairs(LocalConstants.Methods.Default) do
-		if task[method] then
+		if typeof(task[method]) == "function" then
 			return method
 		end
 	end

@@ -36,8 +36,7 @@ local Workspace = game:GetService("Workspace")
 local Octagon = script:FindFirstAncestor("Octagon")
 local Signal = require(Octagon.Shared.Signal)
 local Maid = require(Octagon.Shared.Maid)
-local DestroyAll = require(Octagon.Shared.DestroyAll)
-local ClearReferenceTypes = require(Octagon.Server.ClearReferenceTypes)
+local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
 local InitMaidFor = require(Octagon.Shared.InitMaidFor)
 local PlayerProfileService = require(script.Parent)
 local SharedConstants = require(Octagon.Shared.SharedConstants)
@@ -321,8 +320,8 @@ function PlayerProfile:GetPhysicsThresholdIncrement(physicsThreshold)
 end
 
 function PlayerProfile:_cleanup()
-	DestroyAll(self, Maid.IsMaid)
-	ClearReferenceTypes(self)
+	DestroyAllMaids(self)
+	self.Player = nil
 
 	return nil
 end
@@ -376,7 +375,7 @@ function PlayerProfile:_initPhysicsThresholds(physicsDetections)
 	local humanoid = player.Character.Humanoid
 	local primaryPart = player.Character.PrimaryPart
 
-	if next(physicsDetections) then
+	if next(physicsDetections) ~= nil then
 		for detectionName, _ in pairs(physicsDetections) do
 			self._physicsThresholdIncrements[detectionName] = self._physicsThresholdIncrements[detectionName]
 				or 0
@@ -417,7 +416,7 @@ function PlayerProfile:_initPhysicsThresholds(physicsDetections)
 		end))
 	end
 
-	if physicsDetections.VerticalSpeed then
+	if physicsDetections.VerticalSpeed ~= nil then
 		local VerticalSpeed = require(physicsDetections.VerticalSpeed)
 
 		local function ComputeMaxVerticalSpeed(jumpPower, thresholdIncrement)
@@ -455,7 +454,7 @@ function PlayerProfile:_initPhysicsThresholds(physicsDetections)
 		end))
 	end
 
-	if physicsDetections.HorizontalSpeed then
+	if physicsDetections.HorizontalSpeed ~= nil then
 		local HorizontalSpeed = require(physicsDetections.HorizontalSpeed)
 
 		local function ComputeMaxHorizontalSpeed(horizontalSpeed, thresholdIncrement)

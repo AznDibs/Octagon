@@ -22,7 +22,7 @@ local Util = require(Shared.Util)
 local Signal = require(Shared.Signal)
 local Maid = require(Shared.Maid)
 local InitMaidFor = require(Shared.InitMaidFor)
-local DestroyAll = require(Shared.DestroyAll)
+local DestroyAllMaids = require(Shared.DestroyAllMaids)
    
 PrimaryPartDeletion._onPlayerDetection = Signal.new()
 PrimaryPartDeletion._maid = Maid.new()
@@ -59,7 +59,7 @@ function PrimaryPartDeletion.Start(playerProfile)
 end
 
 function PrimaryPartDeletion.Cleanup()
-	DestroyAll(PrimaryPartDeletion, Maid.IsMaid)
+	DestroyAllMaids(PrimaryPartDeletion)
 
 	return nil
 end

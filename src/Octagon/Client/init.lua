@@ -26,7 +26,7 @@ local Signal = require(Shared.Signal)
 local SafeWaitForChild = require(Shared.SafeWaitForChild)
 local Maid = require(Shared.Maid)
 local InitMaidFor = require(Shared.InitMaidFor)
-local DestroyAll = require(Shared.DestroyAll)
+local DestroyAllMaids = require(Shared.DestroyAllMaids)
 
 local LocalConstants = { MinPlayerHardGroundLandYVelocity = 145 }
 
@@ -83,9 +83,9 @@ function Client._init()
 
 	return nil
 end
-
+ 
 function Client._cleanup()
-	DestroyAll(Client, Maid.IsMaid)
+	DestroyAllMaids(Client)
 
 	return nil
 end
