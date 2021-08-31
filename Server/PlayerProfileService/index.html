@@ -654,20 +654,6 @@
     <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;%s&#39;s profile was loaded&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">playerProfile</span><span class="p">.</span><span class="n">Player</span><span class="p">))</span>
 <span class="kr">end</span>
 </code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Parameters</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>playerProfile : PlayerProfile</code></td>
-<td>The player profile that was loaded</td>
-</tr>
-</tbody>
-</table>
 <h3 id="playerprofileserviceonplayerprofiledestroyed"><code>PlayerProfileService.OnPlayerProfileDestroyed</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfileService</span><span class="p">.</span><span class="n">OnPlayerProfileDestroyed</span> <span class="p">:</span> <span class="n">Signal</span> <span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span>
 </code></pre></div>
@@ -676,38 +662,10 @@
     <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;%s&#39;s profile was destroyed&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">player</span><span class="p">))</span>
 <span class="kr">end</span>
 </code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Parameters</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>player : Player</code></td>
-<td>The Player object whose profile was destroyed</td>
-</tr>
-</tbody>
-</table>
 <h3 id="playerprofileserviceonplayerprofileinit"><code>PlayerProfileService.OnPlayerProfileInit</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfileService</span><span class="p">.</span><span class="n">OnPlayerProfileInit</span> <span class="p">:</span> <span class="n">Signal</span> <span class="p">(</span><span class="n">playerProfile</span> <span class="p">:</span> <span class="n">PlayerProfile</span><span class="p">)</span>
 </code></pre></div>
 <p>A signal which is fired whenever a player's profile is init through <a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileinit">PlayerProfile:Init</a>.</p>
-<table>
-<thead>
-<tr>
-<th>Parameters</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>playerProfile : PlayerProfile</code></td>
-<td>The player profile that was init</td>
-</tr>
-</tbody>
-</table>
 <h3 id="playerprofileserviceloadedplayerprofiles"><code>PlayerProfileService.LoadedPlayerProfiles</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfileService</span><span class="p">.</span><span class="n">LoadedPlayerProfiles</span> <span class="p">:</span> <span class="n">table</span>
 </code></pre></div>
@@ -716,20 +674,6 @@
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfileService</span><span class="p">.</span><span class="n">GetPlayerProfile</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; PlayerProfile | nil []</span>
 </code></pre></div>
 <p>Returns the player profile.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>player : Player</code></td>
-<td>A Player object</td>
-</tr>
-</tbody>
-</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul>

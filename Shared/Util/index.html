@@ -673,103 +673,25 @@
                 <h1 id="util">Util</h1>
 <p>The Util module is a simply module which provides a few basic instance methods associated to instances and players.</p>
 <h3 id="utilgetplayerequippedtools"><code>Util.GetPlayerEquippedTools()</code></h3>
-<div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">GetPlayerEquippedTools</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; table [equippedTools], number [equippedToolsCount]</span>
+<div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">GetPlayerEquippedTools</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; table [equippedTools], number [equippedToolCount]</span>
 </code></pre></div>
 <p>Returns an array of the tools equipped by the player, along with the number of tools equipped.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>player : Player</code></td>
-<td>A Player object</td>
-</tr>
-</tbody>
-</table>
 <h3 id="utilhasbasepartfallentovoid"><code>Util.HasBasePartFallenToVoid()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">HasBasePartFallenToVoid</span><span class="p">(</span><span class="n">basePart</span> <span class="p">:</span> <span class="n">BasePart</span><span class="p">)</span> <span class="c1">--&gt; boolean [HasBasePartFallenToVoid]</span>
 </code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>basePart : BasePart</code></td>
-<td>A BasePart</td>
-</tr>
-</tbody>
-</table>
 <p>Returns a boolean indicating if <code>basePart</code> has fallen to void, i.e <code>basePart.Position.Y</code> equals or is lower than <a href="https://developer.roblox.com/en-us/api-reference/property/Workspace/FallenPartsDestroyHeight">Workspace.FallenPartsDestroyHeight</a>.</p>
 <h3 id="utilisbasepartfalling"><code>Util.IsBasePartFalling()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">IsBasePartFalling</span><span class="p">(</span><span class="n">basePart</span> <span class="p">:</span> <span class="n">basePart</span><span class="p">,</span> <span class="n">lastPosition</span> <span class="p">:</span> <span class="n">Vector3</span><span class="p">)</span> <span class="c1">--&gt; boolean[IsBasePartFalling]</span>
 </code></pre></div>
 <p>Returns a boolean indicating if <code>basePart</code> is falling, i.e <code>basePart.Position.Y</code> is lower than <code>lastPosition.Y</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>basePart : BasePart</code></td>
-<td>A BasePart</td>
-</tr>
-<tr>
-<td><code>lastPosition : Vector3</code></td>
-<td>A Vector3</td>
-</tr>
-</tbody>
-</table>
 <h3 id="utilisinstancedestroyed"><code>Util.IsInstanceDestroyed()</code></h3>
 <div class="highlight"><pre><span></span><code> <span class="n">Util</span><span class="p">.</span><span class="n">IsInstanceDestroyed</span><span class="p">(</span><span class="n">instance</span> <span class="p">:</span> <span class="n">Instance</span><span class="p">)</span> <span class="c1">--&gt; boolean[IsInstanceDestroyed]</span>
 </code></pre></div>
 <p>Returns a boolean indicating if <code>instance</code> is destroyed, i.e via <a href="https://developer.roblox.com/en-us/api-reference/function/Instance/Destroy">Instance:Destroy</a>.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>instance : Instance</code></td>
-<td>An Instance</td>
-</tr>
-</tbody>
-</table>
 <h3 id="utilsetbasepartnetworkowner"><code>Util.SetBasePartNetworkOwner()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">SetBasePartNetworkOwner</span><span class="p">(</span><span class="n">basePart</span> <span class="p">:</span> <span class="n">BasePart</span><span class="p">,</span> <span class="n">networkOwner</span> <span class="p">:</span> <span class="n">player</span> <span class="o">|</span> <span class="kc">nil</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
 </code></pre></div>
 <p>Sets the network owner of <code>basePart</code> to <code>networkOwner</code>. </p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>basePart : BasePart</code></td>
-<td>A BasePart</td>
-</tr>
-<tr>
-<td><code>networkOwner : Player | nil</code></td>
-<td>A Player object or <code>nil</code></td>
-</tr>
-</tbody>
-</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method will warn if the network ownership of <code>basePart</code> can't be set, along with the reason.</p>
@@ -778,20 +700,6 @@
 <div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">GetBasePartNetworkOwner</span><span class="p">(</span><span class="n">basePart</span> <span class="p">:</span> <span class="n">BasePart</span><span class="p">)</span> <span class="c1">--&gt; Player | nil [BasePartNetworkOwner]</span>
 </code></pre></div>
 <p>Returns the network owner of <code>basePart</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>basePart : BasePart</code></td>
-<td>A BasePart</td>
-</tr>
-</tbody>
-</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method will return <code>nil</code> if <code>basePart</code> is anchored.</p>
@@ -800,24 +708,6 @@
 <div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">IsPlayerWalking</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">lastPosition</span> <span class="p">:</span> <span class="n">Vector3</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerWalking]</span>
 </code></pre></div>
 <p>Returns a boolean indicating if <code>player</code> is falling by comparing if <code>player.Character.PrimaryPart.Position.Y</code> is lower than <code>lastPosition.Y</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>player : Player</code></td>
-<td>A Player object</td>
-</tr>
-<tr>
-<td><code>lastPosition : Vector3</code></td>
-<td>A Vector3</td>
-</tr>
-</tbody>
-</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method will return <code>false</code> if <code>player</code>'s character isn't loaded.</p>
@@ -826,20 +716,6 @@
 <div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">DoValidPlayerBodyPartsExist</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; boolean [DoValidPlayerBodyPartsExist]</span>
 </code></pre></div>
 <p>Returns a boolean indicating if <code>player</code> has the primary part and a humanoid inside their character.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>player : Player</code></td>
-<td>A Player object</td>
-</tr>
-</tbody>
-</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method will return <code>false</code> if <code>player</code>'s character isn't loaded.</p>

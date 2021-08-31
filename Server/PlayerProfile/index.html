@@ -772,15 +772,6 @@
                 
                 <h1 id="playerprofile">PlayerProfile</h1>
 <p>A player profile in layman's terms, is simply a table which contains necessary data for Octagon and the developer to work with. </p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>When a player's profile is destroyed internally, i.e whenever they leave the game, most of the members will be not accessible and only some methods will be calleable on the profile.</p>
-<p>Here is the list of the methods / members safe to access even if the profile is destroyed:</p>
-<ul>
-<li><a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofilephysicsdetectionflagcount">PlayerProfile.PhysicsDetectionFlagCount</a></li>
-<li><a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileisdestroyed">PlayerProfile:IsDestroyed()</a></li>
-</ul>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To retrieve a player profile, only use <a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfileService/#playerprofileservicegetplayerprofile">PlayerProfileService.GetPlayerProfile()</a>.</p>
@@ -788,21 +779,7 @@
 <h3 id="playerprofileisplayerprofile"><code>PlayerProfile.IsPlayerProfile()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">IsPlayerProfile</span><span class="p">(</span><span class="n">self</span> <span class="p">:</span> <span class="n">any</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerProfile]</span>
 </code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>self : any</code></td>
-<td>Any value</td>
-</tr>
-</tbody>
-</table>
-<p>Returns a boolean indicating if <code>self</code> is a player profile or not.</p>
+<p>Returns a boolean indicating if <code>self</code> is a player profile.</p>
 <hr />
 <h3 id="only-accessible-from-an-object-created-by-the-playerprofilenew"><strong><code>Only accessible from an object created by the PlayerProfile.new:</code></strong></h3>
 <div class="admonition warning">
@@ -833,68 +810,22 @@
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlag</span> <span class="p">:</span> <span class="n">Signal</span> <span class="p">(</span><span class="n">detectionFlag</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span>
 </code></pre></div>
 <p>A signal which is fired whenever the player is flagged by a detection through <a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileregisterphysicsdetectionflag">PlayerProfile:RegisterPhysicsDetectionFlag</a>. </p>
-<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlag</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> 
-    <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s was flagged for %s&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">Player</span><span class="p">,</span> <span class="n">flag</span><span class="p">))</span> 
+<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlag</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">detectionFlag</span><span class="p">)</span> 
+    <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s was flagged for %s&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">Player</span><span class="p">,</span> <span class="n">detectionFlag</span><span class="p">))</span> 
 <span class="kr">end</span><span class="p">)</span> 
 </code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Parameters</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>flag : string</code></td>
-<td>The flag by the detection (for e.g <code>HighHorizontalSpeed</code>, <code>HighVerticalSpeed</code>)</td>
-</tr>
-</tbody>
-</table>
 <h3 id="playerprofileonphysicsdetectionflagexpire"><code>PlayerProfile.OnPhysicsDetectionFlagExpire</code></h3>
-<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlagExpire</span> <span class="p">:</span> <span class="n">Signal</span> <span class="p">(</span><span class="n">expiredFlag</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlagExpire</span> <span class="p">:</span> <span class="n">Signal</span> <span class="p">(</span><span class="n">expiredDetectionFlag</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span>
 </code></pre></div>
 <p>A signal which is fired whenever the player's flag by a physics detection is expired periodically. When this signal is fired, the physics detections by default, will give back the network ownership from the server to the player and return the player to a normal state.</p>
-<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlagExpire</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">expiredFlag</span><span class="p">)</span> 
-    <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s&#39;s %s flag has been expired&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">Player</span><span class="p">,</span> <span class="n">expiredFlag</span><span class="p">))</span> 
+<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlagExpire</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">expiredDetectionFlag</span><span class="p">)</span> 
+    <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s&#39;s %s flag has been expired&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">Player</span><span class="p">,</span> <span class="n">expiredDetectionFlag</span><span class="p">))</span> 
 <span class="kr">end</span><span class="p">)</span> 
 </code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Parameters</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>expiredFlag : string</code></td>
-<td>The now expired flag by the detection (for e.g <code>HighHorizontalSpeed</code>, <code>HighVerticalSpeed</code>)</td>
-</tr>
-</tbody>
-</table>
 <h3 id="playerprofileregisterphysicsdetectionflag"><code>PlayerProfile:RegisterPhysicsDetectionFlag()</code></h3>
-<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">RegisterPhysicsDetectionFlag</span><span class="p">(</span><span class="n">detectionName</span> <span class="p">:</span> <span class="n">string</span><span class="p">,</span> <span class="n">flag</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
+<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">RegisterPhysicsDetectionFlag</span><span class="p">(</span><span class="n">detection</span> <span class="p">:</span> <span class="n">string</span><span class="p">,</span> <span class="n">flag</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
 </code></pre></div>
 <p>Register a new flag, incrementing <a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofilephysicsdetectionflagcount">PlayerProfile.PhysicsDetectionFlagCount</a> by 1 and adds <code>flag</code> to the player profile's physics detection history and fires <a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileonphysicsdetectionflag">PlayerProfile.OnPhysicsDetectionFlag</a> passing in <code>flag</code> as the argument.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>detectionName : string</code></td>
-<td>The exact name of the physics detection</td>
-</tr>
-<tr>
-<td><code>flag : string</code></td>
-<td>The flag by the detection, for e.g <code>HighHorizontalSpeed</code>, <code>HighVerticalSpeed</code>.</td>
-</tr>
-</tbody>
-</table>
 <h3 id="playerprofileisdestroyed"><code>PlayerProfile:IsDestroyed()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">IsDestroyed</span><span class="p">()</span> <span class="c1">--&gt; boolean [IsDestroyed]</span>
 </code></pre></div>
@@ -910,24 +841,6 @@
     <span class="n">profile</span><span class="p">:</span><span class="n">IncrementPhysicsThreshold</span><span class="p">(</span><span class="s2">&quot;HorizontalSpeed&quot;</span><span class="p">,</span> <span class="nb">math.sqrt</span><span class="p">(</span><span class="n">humanoid</span><span class="p">.</span><span class="n">WalkSpeed</span> <span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
 <span class="kr">end</span><span class="p">)</span>
 </code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>physicsThreshold : string</code></td>
-<td>A value which can be either <code>VerticalSpeed</code> or <code>HorizontalSpeed</code></td>
-</tr>
-<tr>
-<td><code>thresholdIncrement : number</code></td>
-<td>The value to increment the threshold by</td>
-</tr>
-</tbody>
-</table>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This method will throw an error if the detection it self for <code>physicsThreshold</code> doesn't exist or isn't enabled.</p>
@@ -936,24 +849,6 @@
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">DecrementPhysicsThreshold</span><span class="p">(</span><span class="n">physicsThreshold</span> <span class="p">:</span> <span class="n">string</span><span class="p">,</span> <span class="n">thresholdDecrement</span> <span class="p">:</span> <span class="n">number</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
 </code></pre></div>
 <p>Decrements the threshold for <code>physicsThreshold</code> by <code>thresholdDecrement</code>. </p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>physicsThreshold : string</code></td>
-<td>A value which can be either <code>VerticalSpeed</code> or <code>HorizontalSpeed</code> (if the detections for them are enabled)</td>
-</tr>
-<tr>
-<td><code>thresholdIncrement : number</code></td>
-<td>The value to decrement the threshold by</td>
-</tr>
-</tbody>
-</table>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This method will throw an error if the detection it self for <code>physicsThreshold</code> doesn't exist or isn't enabled.</p>
@@ -973,20 +868,6 @@
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">GetPhysicsThresholdIncrement</span><span class="p">(</span><span class="n">physicsThreshold</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span> <span class="c1">--&gt; number [thresholdIncrement]</span>
 </code></pre></div>
 <p>Returns the threshold increment for <code>physicsThreshold</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>physicsThreshold : string</code></td>
-<td>A value which can be either <code>VerticalSpeed</code> or <code>HorizontalSpeed</code> (if the detections for them are enabled)</td>
-</tr>
-</tbody>
-</table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method will return <code>nil</code> if the detection for <code>physicsThreshold</code> doesn't exist or isn't enabled.</p>
