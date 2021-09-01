@@ -157,7 +157,7 @@ function Server.BlacklistNoClipMonitoringPartsForPlayer(player, parts)
 		typeof(parts) == "table",
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			2,
-			"Octagon.BlacklistNoClipMonitoringParts()",
+			"Octagon.BlacklistNoClipMonitoringPartsForPlayer()",
 			"table",
 			typeof(parts)
 		)
@@ -191,7 +191,7 @@ function Server.UnBlacklistNoClipMonitoringPartsForPlayer(player, parts)
 		typeof(parts) == "table",
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
-			"Server.UnBlacklistNoClipMonitoringParts()",
+			"Server.UnBlacklistNoClipMonitoringPartsForPlayer()",
 			"table",
 			typeof(parts)
 		)
@@ -352,20 +352,15 @@ function Server._cleanup()
 end
 
 function Server._init()
-	Server._initDetections()
-	Server._initSignals()
-	PlayerProfileService.Init()
-
+	if Server._initDetections() then
+		Server._initSignals()
+		PlayerProfileService.Init()
+	end
+	
 	return nil
 end
 
 function Server._initSignals()
-	-- Don't init signals unnecessarily if no physics detections were available to start
-	-- as these signals depend on the physics detections:
-	if not Server._arePhysicsDetectionsInit then
-		return nil
-	end
-
 	InitMaidFor(Server, Server._maid, Signal.IsSignal)
 
 	-- Track newly loaded player profiles and start
@@ -434,6 +429,8 @@ function Server._cleanupDetections()
 end
 
 function Server._initDetections()
+	local areDetectionsInit = false
+
 	for _, module in ipairs(script.Detections.Physics:GetChildren()) do
 		local requiredModule = require(module)
 
@@ -441,6 +438,7 @@ function Server._initDetections()
 			continue
 		end
 
+		areDetectionsInit = true
 		requiredModule.Init()
 
 		Server._arePhysicsDetectionsInit = true
@@ -454,11 +452,12 @@ function Server._initDetections()
 			continue
 		end
 
+		areDetectionsInit = true
 		requiredModule.Init()
 		Server._detectionsInit.NonPhysics[module.Name] = module
 	end
 
-	return nil
+	return areDetectionsInit
 end
 
 function Server._heartBeatUpdate(dt, verticalSpeed, horizontalSpeed)
