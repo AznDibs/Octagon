@@ -10,8 +10,8 @@
     Server.Stop() --> nil []
 	Server.IsStarted() --> boolean [IsStarted]
 	Server.IsStopped() --> boolean [IsStopped]
-    Server.BlacklistNoClipMonitoringParts(parts : table) --> nil []
-    Server.UnBlacklistNoClipMonitoringParts(parts : table) --> nil []
+    Server.BlacklistNoClipMonitoringPartsForPlayer(player : Player, parts : table) --> nil []
+    Server.UnBlacklistNoClipMonitoringPartsForPlayer(player : Player, parts : table) --> nil []
     Server.TemporarilyBlacklistPlayerFromBeingMonitored(
         player : Player,
         value : number | function | RBXScriptSignal | Signal
