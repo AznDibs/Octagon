@@ -266,7 +266,7 @@ function Server.Start()
 				)
 
 				Server._initPlayer(playerProfile)
-				Server._startNonPhysicsDetections(playerProfile)
+				Server._startNonPhysicsDetectionsForPlayer(playerProfile)
 				Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
 					playerProfile:SetDeinitTag()
 					playerProfile:Init(Server._detectionsInit.Physics)
@@ -566,9 +566,9 @@ function Server._setPlayerPrimaryNetworkOwner(player)
 	return nil
 end
 
-function Server._startNonPhysicsDetections(playerProfile)
-	for _, detection in pairs(Server._detectionsInit.NonPhysics) do
-		require(detection).Start(playerProfile)
+function Server._startNonPhysicsDetectionsForPlayer(playerProfile)
+	for _, module in pairs(Server._detectionsInit.NonPhysics) do
+		require(module).Start(playerProfile)
 	end
 
 	return nil
