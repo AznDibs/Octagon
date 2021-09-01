@@ -91,7 +91,7 @@ Returns a boolean indicating if the player is the owner of the game or the owner
 
 ### `Util.IsPlayerSubjectToBeMonitored()`
 ```lua
-Server.IsPlayerSubjectToBeMonitored(player : Player) --> boolean [IsPlayerSubjectToBeMonitored]
+Util.IsPlayerSubjectToBeMonitored(player : Player) --> boolean [IsPlayerSubjectToBeMonitored]
 ```
 
 Returns a boolean indicating if `player` is going to be monitored by Octagon.
