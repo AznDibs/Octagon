@@ -8,8 +8,8 @@
 
     -- Only when accessed from an object returned by PlayerProfile.new:
 
-    PlayerProfile.OnPhysicsDetectionFlag : Signal (detectionFlag : string)
-    PlayerProfile.OnPhysicsDetectionFlagExpire : Signal (expiredDetectionFlag : string)
+    PlayerProfile.OnPhysicsDetectionFlag : Signal (flag : string)
+    PlayerProfile.OnPhysicsDetectionFlagExpire : Signal (expiredFlag : string)
     PlayerProfile.Player : Player
     PlayerProfile.Maid : Maid
 	PlayerProfile.OnInit : Signal ()
@@ -250,16 +250,16 @@ function PlayerProfile:RegisterPhysicsDetectionFlag(detection, flag)
 		)
 	)
 
-	local detections = script:FindFirstAncestor("Server").Detections
+	local detections = Octagon.Server.Detections
 	local physicsDetectionModule = detections.Physics:FindFirstChild(detection)
 		and require(detections.Physics[detection])
-   
+
 	assert(
 		physicsDetectionModule or detections.NonPhysics:FindFirstChild(detection),
 		"Invalid detection"
 	)
 
-	if physicsDetectionModule then
+	if physicsDetectionModule ~= nil then
 		local detectionData = self.DetectionData[detection]
 
 		detectionData.FlagExpireDt = physicsDetectionModule.PlayerDetectionFlagExpireInterval
@@ -273,12 +273,10 @@ function PlayerProfile:RegisterPhysicsDetectionFlag(detection, flag)
 			-- destroyed while this loop is running. This happens
 			-- when the player immediately leaves after being flagged
 			-- by a physics detection:
-			if self:IsDestroyed() then
-				return nil
+			if not self:IsDestroyed() then
+				detectionData.FlagExpireDt = 0
+				self.OnPhysicsDetectionFlagExpire:Fire(flag)
 			end
-
-			detectionData.FlagExpireDt = 0
-			self.OnPhysicsDetectionFlagExpire:Fire(flag)
 		end)
 	end
 
@@ -328,8 +326,8 @@ end
 
 function PlayerProfile:_initPhysicsDetectionData(physicsDetections)
 	-- Setup detection data:
-	for detectionName, detection in pairs(physicsDetections) do
-		detection = require(detection)
+	for detection, detectionModule in pairs(physicsDetections) do
+		local requiredDetectionModule = require(detectionModule)
 
 		local physicsData = {
 			LastCFrame = nil,
@@ -337,18 +335,18 @@ function PlayerProfile:_initPhysicsDetectionData(physicsDetections)
 		}
 
 		-- Setup ray cast params for no clip detection:
-		if detectionName == "NoClip" then
+		if detection == "NoClip" then
 			local rayCastParams = RaycastParams.new()
 			rayCastParams.FilterDescendantsInstances = { self.Player.Character }
 			rayCastParams.IgnoreWater = true
 			physicsData.RaycastParams = rayCastParams
 		end
 
-		local detectionData = self.DetectionData[detectionName]
+		local detectionData = self.DetectionData[detection]
 		local lastStartDt = detectionData and detectionData.LastStartDt
 		local flagExpireDt = detectionData and detectionData.FlagExpireDt
 
-		self.DetectionData[detectionName] = {
+		self.DetectionData[detection] = {
 			DetectionDataTag = true,
 			LastStartDt = lastStartDt or 0,
 			FlagExpireDt = flagExpireDt or 0,
@@ -369,51 +367,14 @@ function PlayerProfile:_updateAllDetectionPhysicsData(key, value)
 end
 
 function PlayerProfile:_initPhysicsThresholds(physicsDetections)
-	local Server = require(script:FindFirstAncestor("Server"))
-
 	local player = self.Player
 	local humanoid = player.Character.Humanoid
 	local primaryPart = player.Character.PrimaryPart
 
-	if next(physicsDetections) ~= nil then
-		for detectionName, _ in pairs(physicsDetections) do
-			self._physicsThresholdIncrements[detectionName] = self._physicsThresholdIncrements[detectionName]
-				or 0
-			self.PhysicsThresholds[detectionName] = 0
-		end
-
-		self.Maid:AddTask(primaryPart:GetPropertyChangedSignal("CFrame"):Connect(function()
-			self:_updateAllDetectionPhysicsData("LastCFrame", primaryPart.CFrame)
-		end))
-
-		self.Maid:AddTask(primaryPart:GetPropertyChangedSignal("Parent"):Connect(function()
-			Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, player.CharacterAdded)
-		end))
-
-		self.Maid:AddTask(
-			primaryPart:GetPropertyChangedSignal("AssemblyLinearVelocity"):Connect(function()
-				Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
-					task.wait(primaryPart.AssemblyLinearVelocity.Magnitude / Workspace.Gravity)
-				end)
-			end)
-		)
-
-		self.Maid:AddTask(humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
-			if not humanoid.SeatPart then
-				return
-			end
-
-			-- Player is in seat, temporarily black list the player once they get out to
-			-- prevent horizontal / vertical speed false positive:
-			Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
-				humanoid.SeatPart:GetPropertyChangedSignal("Occupant"):Wait()
-				-- Player has got out of the seat, but yield for a second before
-				-- finishing execution to prevent physics detections from immediately
-				-- starting. This prevents false positives when a player gets out of a
-				-- seat quickly:
-				task.wait(1)
-			end)
-		end))
+	for detection, _ in pairs(physicsDetections) do
+		self._physicsThresholdIncrements[detection] = self._physicsThresholdIncrements[detection]
+			or 0
+		self.PhysicsThresholds[detection] = 0
 	end
 
 	if physicsDetections.VerticalSpeed ~= nil then
