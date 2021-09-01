@@ -62,6 +62,8 @@ Returns the player profile.
 
     - This method will return `nil` if `player` is black listed from being monitored by Octagon.
 
+    - This method will return `nil` if all detections are disabled.
+
 ### `PlayerProfileService.ArePlayerProfilesLoaded()`
 
 ```lua
