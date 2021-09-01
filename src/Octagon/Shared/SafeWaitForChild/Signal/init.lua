@@ -21,7 +21,9 @@
 	Signal:IsDestroyed() --> boolean [IsDestroyed]
 ]]
 
-local Signal = { _freeRunnerThread = nil }
+local Signal = {
+	_freeRunnerThread = nil,
+}
 Signal.__index = Signal
 
 local Connection = require(script.Connection)
