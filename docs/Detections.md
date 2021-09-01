@@ -16,9 +16,16 @@ By default, Octagon comes with the following physics detections:
 
 This detection by default, checks if the player (who is being monitored) has no clipped through an instance reliably. If these conditions are true, then the player is flagged for no clip, teleported to their last CFrame (just before they no clipped) and their network ownership temporarily taken away from them.
 
+!!!tip
+    This detection does account for physics collision groups and the property `CanCollide` of an instance. If the can collide 
+
 #### **HorizontalSpeed**
 
 This detection by default, checks if the player (who is being monitored) is walking / teleported / has teleported **significantly higher** than their walk speed is capable of.  If these conditions are true, then the player is flagged for high horizontal speed, teleported to their last CFrame (just before these conditions were true) and their network ownership temporarily taken away from them.
+
+!!!tip
+    The server can safely increase the velocity of the player's character's primary part, or
+    simply teleport the player without this detection flagging the player.
 
 #### **VerticalSpeed**
 
@@ -58,6 +65,10 @@ local HorizontalSpeed = {
 
 ...
 ```
+
+!!!tip
+    The server can safely increase the velocity of the player's character's primary part, or
+    simply teleport the player without this detection flagging the player.
 
 Each physics detection, comes with a predefined set of members which you can toggle for your own game's need:
 
