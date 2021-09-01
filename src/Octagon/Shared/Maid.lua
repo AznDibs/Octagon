@@ -17,6 +17,7 @@
 	Maid:IsDestroyed() --> boolean [IsDestroyed]
 	Maid:RemoveTask(task) --> nil []
 	Maid:Destroy() --> nil []
+	Maid:LinkToInstances(instances : table) --> instances []
 ]]
 
 local Maid = {}
@@ -53,7 +54,7 @@ function Maid.IsMaid(self)
 	return typeof(self) == "table" and self._isMaid
 end
 
-function Maid:AddTask(task, customCleanupMethod, identifier)
+function Maid:AddTask(task, customCleanupMethod)
 	assert(
 		typeof(task) == "function"
 			or typeof(task) == "RBXScriptConnection"
@@ -74,32 +75,22 @@ function Maid:AddTask(task, customCleanupMethod, identifier)
 			typeof(customCleanupMethod)
 		)
 	)
-	assert(
-		typeof(identifier) == "string" or identifier == nil,
-		LocalConstants.ErrorMessages.InvalidArgument:format(
-			3,
-			"Maid.new()",
-			"string or nil",
-			typeof(identifier)
-		)
-	)
 
 	if typeof(task) == "table" then
-		task = {
-			Task = task,
-			CustomCleanupMethod = customCleanupMethod,
-			Identifier = identifier or tostring(task),
-		}
-
 		if customCleanupMethod then
 			assert(
 				typeof(task[customCleanupMethod]) == "function",
 				("Cleanup method [%s] not found in task: %s"):format(
 					customCleanupMethod,
-					task.Identifier
+					tostring(task)
 				)
 			)
 		end
+
+		task = {
+			Task = task,
+			CustomCleanupMethod = customCleanupMethod,
+		}
 	end
 
 	self._tasks[task] = task
@@ -153,6 +144,38 @@ function Maid:Destroy()
 	return nil
 end
 
+function Maid:LinkToInstances(instances)
+	assert(
+		typeof(instances) == "table",
+		LocalConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Maid:LinkToInstances()",
+			"table",
+			typeof(table)
+		)
+	)
+
+	for _, instance in ipairs(instances) do
+		local instanceParentChangedConnection = nil
+		instanceParentChangedConnection = self:AddTask(
+			instance:GetPropertyChangedSignal("Parent"):Connect(function()
+				if not instance.Parent then
+					task.defer(function()
+						-- If the connection has also been disconnected, then its
+						-- guaranteed that the instance has been destroyed through
+						-- Destroy():
+						if not instanceParentChangedConnection.Connected then
+							self:Cleanup()
+						end
+					end)
+				end
+			end)
+		)
+	end
+
+	return instances
+end
+
 function Maid:Cleanup()
 	for key, task in pairs(self._tasks) do
 		if typeof(task) == "function" then
@@ -162,7 +185,7 @@ function Maid:Cleanup()
 		elseif typeof(task) == "table" then
 			local customCleanupMethod = task.Task[task.CustomCleanupMethod]
 
-			if customCleanupMethod then
+			if customCleanupMethod ~= nil then
 				customCleanupMethod(task.Task)
 			else
 				local defaultMethod = Maid._getDefaultMethod(task.Task)
@@ -173,7 +196,7 @@ function Maid:Cleanup()
 					warn(
 						(
 							"[Maid]: Can't cleanup task: %s as no default / custom method was found"
-						):format(task.Identifier)
+						):format(task.Task)
 					)
 				end
 			end
