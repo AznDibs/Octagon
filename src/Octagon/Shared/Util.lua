@@ -11,15 +11,156 @@
     Util.SetBasePartNetworkOwner(basePart : BasePart, networkOwner : player | nil) --> nil []
     Util.GetBasePartNetworkOwner(basePart : BasePart) --> Player | nil [BasePartNetworkOwner]
     Util.GetPlayerEquippedTools(player : Player) --> table [equippedTools], number [equippedToolCount]
+	Util.IsPlayerSubjectToBeMonitored(player : Player) --> boolean [IsPlayerSubjectToBeMonitored]
+    Util.IsPlayerGameOwner(player : Player) --> boolean [IsPlayerGameOwner]
 ]]
 
-local Util = {}
+local Util = {
+	_shouldMonitorPlayerResultsCache = {},
+	_isPlayerGameOwnerResultsCache = {},
+}
 
 local Workspace = game:GetService("Workspace")
 
-local SharedConstants = require(script:FindFirstAncestor("Octagon").Shared.SharedConstants)
+local Octagon = script:FindFirstAncestor("Octagon")
+local SharedConstants = require(Octagon.Shared.SharedConstants)
+local Signal = require(Octagon.Shared.Signal)
+local Config = require(Octagon.Server.Config)
+local RetryPcall = require(Octagon.Shared.RetryPcall)
 
-local LocalConstants = { PlayerMinWalkingDistance = 0.125 }
+local LocalConstants = {
+	FailedPcallRetryInterval = 5,
+	MaxFailedPcallTries = 5,
+	OwnerGroupRank = 255,
+	DefaultPlayerGroupRank = 0,
+	PlayerMinWalkingDistance = 0.125
+}
+
+function Util.IsPlayerGameOwner(player)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.IsPlayerGameOwner()",
+			"Player",
+			typeof(player)
+		)
+	)
+
+	local cachedResult = Util._isPlayerGameOwnerResultsCache[player.UserId]
+
+	-- If the cached result is a signal, that means that this method
+	-- was called again while it was performing a lookup for the same
+	-- argument, wait until that signal fires and return the results
+	-- instead of performing an other unnecessary lookup. Else, return the
+	-- result because we know it was already computed:
+	if cachedResult ~= nil then
+		if Signal.IsSignal(cachedResult) then
+			return cachedResult:Wait()
+		else
+			return cachedResult
+		end
+	end
+
+	local isPlayerGameOwner = false
+	local onIsPlayerGameOwnerResult = Signal.new()
+	Util._isPlayerGameOwnerResultsCache[player.UserId] = onIsPlayerGameOwnerResult
+
+	if game.CreatorType == Enum.CreatorType.Group then
+		isPlayerGameOwner = Util._getPlayerRankInGroup(player, game.CreatorId)
+			== LocalConstants.OwnerGroupRank
+	else
+		isPlayerGameOwner = player.UserId == game.CreatorId
+	end
+
+	onIsPlayerGameOwnerResult:Fire(isPlayerGameOwner)
+	onIsPlayerGameOwnerResult:Destroy()
+
+	Util._isPlayerGameOwnerResultsCache[player.UserId] = isPlayerGameOwner
+
+	return isPlayerGameOwner
+end
+
+function Util.IsPlayerSubjectToBeMonitored(player)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Util.IsPlayerSubjectToBeMonitored()",
+			"Player",
+			typeof(player)
+		)
+	)
+
+	local cachedResult = Util._shouldMonitorPlayerResultsCache[player.UserId]
+
+	-- If the cached result is a signal, that means that this method
+	-- was called again while it was performing a lookup for the same
+	-- argument, wait until that signal fires and return the results
+	-- instead of performing an other unnecessary lookup. Else, return the
+	-- result because we know it was already computed:
+	if cachedResult ~= nil then
+		if Signal.IsSignal(cachedResult) then
+			return cachedResult:Wait()
+		else
+			return cachedResult
+		end
+	end
+
+	local onShouldMonitorPlayerResult = Signal.new()
+	Util._shouldMonitorPlayerResultsCache[player] = onShouldMonitorPlayerResult
+
+	local isPlayerBlackListedFromBeingMonitored = Util._isPlayerBlackListedFromBeingMonitored(
+		player
+	)
+
+	if not isPlayerBlackListedFromBeingMonitored then
+		local isPlayerGameOwner = Util.IsPlayerGameOwner(player)
+
+		isPlayerBlackListedFromBeingMonitored = isPlayerGameOwner
+			and not Config.ShouldMonitorGameOwner
+
+		if not isPlayerBlackListedFromBeingMonitored and not isPlayerGameOwner then
+			for groupId, config in pairs(Config.PlayersBlackListedFromBeingMonitored.GroupConfig) do
+				local minimumPlayerGroupRank = config.MinimumPlayerGroupRank
+				local requiredPlayerGroupRank = config.RequiredPlayerGroupRank
+
+				assert(
+					typeof(groupId) == "number",
+					"Key in Config.GroupConfig must be a number (group id)"
+				)
+
+				assert(
+					typeof(minimumPlayerGroupRank) == "number"
+						or typeof(requiredPlayerGroupRank) == "number",
+					(
+						"RequiredPlayerGroupRank or MinimumPlayerGroupRank must be a number in Config.PlayersBlackListedFromBeingMonitored.GroupConfig[%d]"
+					):format(groupId)
+				)
+
+				local playerGroupRank = Util._getPlayerRankInGroup(player, groupId)
+
+				isPlayerBlackListedFromBeingMonitored = playerGroupRank
+						== requiredPlayerGroupRank
+					or minimumPlayerGroupRank
+						and playerGroupRank >= minimumPlayerGroupRank
+
+				if isPlayerBlackListedFromBeingMonitored then
+					break
+				end
+			end
+		end
+	end
+
+	local shouldMonitorPlayer = not isPlayerBlackListedFromBeingMonitored
+	onShouldMonitorPlayerResult:Fire(shouldMonitorPlayer)
+	onShouldMonitorPlayerResult:Destroy()
+
+	-- Cache lookup result for later reuse:
+	Util._shouldMonitorPlayerResultsCache[player.UserId] = shouldMonitorPlayer
+
+	return shouldMonitorPlayer
+end
 
 function Util.GetPlayerEquippedTools(player)
 	assert(
@@ -207,6 +348,38 @@ function Util.IsInstanceDestroyed(instance)
 	end)
 
 	return not wasSuccessFull and response:match("locked") ~= nil
+end
+
+function Util._isPlayerBlackListedFromBeingMonitored(player)
+	return Config.PlayersBlackListedFromBeingMonitored[player.UserId]
+		and not Util.IsPlayerGameOwner(player)
+end
+
+function Util._getPlayerRankInGroup(player, groupId)
+	local wasSuccessFull, response = RetryPcall(
+		LocalConstants.MaxFailedPcallTries,
+		LocalConstants.FailedPcallRetryInterval,
+
+		{
+			player.GetRankInGroup,
+			player,
+			groupId,
+		}
+	)
+
+	if not wasSuccessFull then
+		warn(
+			("%s: Failed to get %s's group rank. Error: %s"):format(
+				SharedConstants.FormattedOutputMessages.Octagon.Debug,
+				player.Name,
+				response
+			)
+		)
+
+		return LocalConstants.DefaultPlayerGroupRank
+	else
+		return response
+	end
 end
 
 return Util
