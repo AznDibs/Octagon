@@ -257,8 +257,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../Basicusage/" class="md-nav__link">
-        Basic usage
+      <a href="../Exampleusage/" class="md-nav__link">
+        Example usage
       </a>
     </li>
   
@@ -804,8 +804,17 @@
 <h2 id="how-do-they-work">How do they work?</h2>
 <h4 id="noclip"><strong>NoClip</strong></h4>
 <p>This detection by default, checks if the player (who is being monitored) has no clipped through an instance reliably. If these conditions are true, then the player is flagged for no clip, teleported to their last CFrame (just before they no clipped) and their network ownership temporarily taken away from them.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This detection does account for physics collision groups and the property <code>CanCollide</code> of an instance. If the can collide </p>
+</div>
 <h4 id="horizontalspeed"><strong>HorizontalSpeed</strong></h4>
 <p>This detection by default, checks if the player (who is being monitored) is walking / teleported / has teleported <strong>significantly higher</strong> than their walk speed is capable of.  If these conditions are true, then the player is flagged for high horizontal speed, teleported to their last CFrame (just before these conditions were true) and their network ownership temporarily taken away from them.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The server can safely increase the velocity of the player's character's primary part, or
+simply teleport the player without this detection flagging the player.</p>
+</div>
 <h4 id="verticalspeed"><strong>VerticalSpeed</strong></h4>
 <p>This detection works exactly like the above one, but for high vertical speed.</p>
 <hr />
@@ -840,6 +849,11 @@
 
 <span class="p">...</span>
 </code></pre></div></p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The server can safely increase the velocity of the player's character's primary part, or
+simply teleport the player without this detection flagging the player.</p>
+</div>
 <p>Each physics detection, comes with a predefined set of members which you can toggle for your own game's need:</p>
 <h3 id="physicsdetectionleeway"><code>PhysicsDetection.Leeway</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PhysicsDetection</span><span class="p">.</span><span class="n">Leeway</span> <span class="p">:</span> <span class="n">number</span>

@@ -255,8 +255,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Basicusage/" class="md-nav__link">
-        Basic usage
+      <a href="../../Exampleusage/" class="md-nav__link">
+        Example usage
       </a>
     </li>
   
@@ -771,10 +771,18 @@
                 
                 
                 <h1 id="playerprofile">PlayerProfile</h1>
-<p>A player profile in layman's terms, is simply a table which contains necessary data for Octagon and the developer to work with. </p>
+<p>A player profile in layman's terms, is simply a table which contains necessary data for 
+Octagon and the developer to work with. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+<ul>
+<li>
+<p>This section does not include additional methods which are to be used by Octagon internally. It only includes the necessary information only.</p>
+</li>
+<li>
 <p>To retrieve a player profile, only use <a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfileService/#playerprofileservicegetplayerprofile">PlayerProfileService.GetPlayerProfile()</a>.</p>
+</li>
+</ul>
 </div>
 <h3 id="playerprofileisplayerprofile"><code>PlayerProfile.IsPlayerProfile()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">IsPlayerProfile</span><span class="p">(</span><span class="n">self</span> <span class="p">:</span> <span class="n">any</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerProfile]</span>
@@ -807,19 +815,19 @@
 </code></pre></div>
 <p>The number of physics detection flags accumulated by the player who owns this profile.</p>
 <h3 id="playerprofileonphysicsdetectionflag"><code>PlayerProfile.OnPhysicsDetectionFlag</code></h3>
-<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlag</span> <span class="p">:</span> <span class="n">Signal</span> <span class="p">(</span><span class="n">detectionFlag</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlag</span> <span class="p">:</span> <span class="n">Signal</span> <span class="p">(</span><span class="n">flag</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span>
 </code></pre></div>
 <p>A signal which is fired whenever the player is flagged by a detection through <a href="https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileregisterphysicsdetectionflag">PlayerProfile:RegisterPhysicsDetectionFlag</a>. </p>
-<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlag</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">detectionFlag</span><span class="p">)</span> 
-    <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s was flagged for %s&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">Player</span><span class="p">,</span> <span class="n">detectionFlag</span><span class="p">))</span> 
+<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlag</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> 
+    <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s was flagged for %s&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">Player</span><span class="p">,</span> <span class="n">flag</span><span class="p">))</span> 
 <span class="kr">end</span><span class="p">)</span> 
 </code></pre></div>
 <h3 id="playerprofileonphysicsdetectionflagexpire"><code>PlayerProfile.OnPhysicsDetectionFlagExpire</code></h3>
-<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlagExpire</span> <span class="p">:</span> <span class="n">Signal</span> <span class="p">(</span><span class="n">expiredDetectionFlag</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlagExpire</span> <span class="p">:</span> <span class="n">Signal</span> <span class="p">(</span><span class="n">expiredFlag</span> <span class="p">:</span> <span class="n">string</span><span class="p">)</span>
 </code></pre></div>
 <p>A signal which is fired whenever the player's flag by a physics detection is expired periodically. When this signal is fired, the physics detections by default, will give back the network ownership from the server to the player and return the player to a normal state.</p>
-<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlagExpire</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">expiredDetectionFlag</span><span class="p">)</span> 
-    <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s&#39;s %s flag has been expired&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">Player</span><span class="p">,</span> <span class="n">expiredDetectionFlag</span><span class="p">))</span> 
+<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlagExpire</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">expiredFlag</span><span class="p">)</span> 
+    <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s&#39;s %s flag has been expired&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">.</span><span class="n">Player</span><span class="p">,</span> <span class="n">expiredFlag</span><span class="p">))</span> 
 <span class="kr">end</span><span class="p">)</span> 
 </code></pre></div>
 <h3 id="playerprofileregisterphysicsdetectionflag"><code>PlayerProfile:RegisterPhysicsDetectionFlag()</code></h3>
@@ -856,10 +864,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If decrementing physics threshold values such that they are to be a value &lt;= <code>0</code>, they will be clamped to <code>0</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">IncrementPhysicsThreshold</span><span class="p">(</span><span class="s2">&quot;VerticalSpeed&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">GetPhysicsThresholdIncrement</span><span class="p">(</span><span class="s2">&quot;VerticalSpeed&quot;</span><span class="p">))</span> <span class="c1">--&gt; 500</span>
-<span class="n">PlayerProfile</span><span class="p">:</span><span class="n">DecrementPhysicsThreshold</span><span class="p">(</span><span class="s2">&quot;VerticalSpeed&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">GetPhysicsThresholdIncrement</span><span class="p">(</span><span class="s2">&quot;VerticalSpeed&quot;</span><span class="p">))</span> <span class="c1">--&gt; 0</span>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">GetPhysicsThresholdIncrement</span><span class="p">(</span><span class="s2">&quot;VerticalSpeed&quot;</span><span class="p">))</span> <span class="c1">--&gt; 0</span>
 <span class="n">PlayerProfile</span><span class="p">:</span><span class="n">DecrementPhysicsThreshold</span><span class="p">(</span><span class="s2">&quot;VerticalSpeed&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">PlayerProfile</span><span class="p">:</span><span class="n">GetPhysicsThresholdIncrement</span><span class="p">(</span><span class="s2">&quot;VerticalSpeed&quot;</span><span class="p">))</span> <span class="c1">--&gt; 0</span>
 </code></pre></div>

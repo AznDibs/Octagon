@@ -255,8 +255,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Basicusage/" class="md-nav__link">
-        Basic usage
+      <a href="../../Exampleusage/" class="md-nav__link">
+        Example usage
       </a>
     </li>
   
@@ -418,22 +418,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#octagonisplayergameowner" class="md-nav__link">
-    Octagon.IsPlayerGameOwner()
+  <a href="#octagonblacklistnoclipmonitoringpartsforplayer" class="md-nav__link">
+    Octagon.BlacklistNoClipMonitoringPartsForPlayer()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#octagonblacklistnoclipmonitoringparts" class="md-nav__link">
-    Octagon.BlacklistNoClipMonitoringParts()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#octagonunblacklistnoclipmonitoringparts" class="md-nav__link">
-    Octagon.UnBlacklistNoClipMonitoringParts()
+  <a href="#octagonunblacklistnoclipmonitoringpartsforplayer" class="md-nav__link">
+    Octagon.UnBlacklistNoClipMonitoringPartsForPlayer()
   </a>
   
 </li>
@@ -441,13 +434,6 @@
           <li class="md-nav__item">
   <a href="#octagontemporarilyblacklistplayerfrombeingmonitored" class="md-nav__link">
     Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#octagonisplayersubjecttobemonitored" class="md-nav__link">
-    Octagon.IsPlayerSubjectToBeMonitored()
   </a>
   
 </li>
@@ -682,22 +668,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#octagonisplayergameowner" class="md-nav__link">
-    Octagon.IsPlayerGameOwner()
+  <a href="#octagonblacklistnoclipmonitoringpartsforplayer" class="md-nav__link">
+    Octagon.BlacklistNoClipMonitoringPartsForPlayer()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#octagonblacklistnoclipmonitoringparts" class="md-nav__link">
-    Octagon.BlacklistNoClipMonitoringParts()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#octagonunblacklistnoclipmonitoringparts" class="md-nav__link">
-    Octagon.UnBlacklistNoClipMonitoringParts()
+  <a href="#octagonunblacklistnoclipmonitoringpartsforplayer" class="md-nav__link">
+    Octagon.UnBlacklistNoClipMonitoringPartsForPlayer()
   </a>
   
 </li>
@@ -705,13 +684,6 @@
           <li class="md-nav__item">
   <a href="#octagontemporarilyblacklistplayerfrombeingmonitored" class="md-nav__link">
     Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#octagonisplayersubjecttobemonitored" class="md-nav__link">
-    Octagon.IsPlayerSubjectToBeMonitored()
   </a>
   
 </li>
@@ -772,31 +744,15 @@
 <div class="highlight"><pre><span></span><code><span class="n">Octagon</span><span class="p">.</span><span class="n">IsStopped</span><span class="p">()</span> <span class="c1">--&gt; boolean [IsStopped]</span>
 </code></pre></div>
 <p>Returns a boolean indicating if Octagon is stopped.</p>
-<h3 id="octagonisplayergameowner"><code>Octagon.IsPlayerGameOwner()</code></h3>
-<div class="highlight"><pre><span></span><code><span class="n">Octagon</span><span class="p">.</span><span class="n">IsPlayerGameOwner</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerGameOwner]</span>
+<h3 id="octagonblacklistnoclipmonitoringpartsforplayer"><code>Octagon.BlacklistNoClipMonitoringPartsForPlayer()</code></h3>
+<div class="highlight"><pre><span></span><code><span class="n">Octagon</span><span class="p">.</span><span class="n">BlacklistNoClipMonitoringPartsForPlayer</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">parts</span> <span class="p">:</span> <span class="n">table</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
 </code></pre></div>
-<p>Returns a boolean indicating if the player is the owner of the game or the owner of the group the game is in.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method may temporarily yield the thread if the game is under a group as it will send an GET HTTP request to retrieve <code>player</code>'s rank in order to determine if <code>player</code> is the owner of that group.</p>
-</div>
-<h3 id="octagonblacklistnoclipmonitoringparts"><code>Octagon.BlacklistNoClipMonitoringParts()</code></h3>
-<div class="highlight"><pre><span></span><code><span class="n">Octagon</span><span class="p">.</span><span class="n">BlacklistNoClipMonitoringParts</span><span class="p">(</span><span class="n">parts</span> <span class="p">:</span> <span class="n">table</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
+<p>Iterates through <code>parts</code> and adds a noclip black listed tag for <code>player</code> to each instance found which will allow only <code>player</code> to pass
+through those parts even if their property <code>CanCollide</code> isn't set to <code>false</code> on the server. This method is useful when you want to allow specific players to pass through collideable parts.</p>
+<h3 id="octagonunblacklistnoclipmonitoringpartsforplayer"><code>Octagon.UnBlacklistNoClipMonitoringPartsForPlayer()</code></h3>
+<div class="highlight"><pre><span></span><code><span class="n">Server</span><span class="p">.</span><span class="n">UnBlacklistNoClipMonitoringPartsForPlayer</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">parts</span> <span class="p">:</span> <span class="n">table</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
 </code></pre></div>
-<p>Iterates through <code>parts</code> and adds a noclip black listed tag which will allow players to pass
-through those parts even if they aren't <code>CanCollide</code> <code>true</code> on the server.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method ignores parts that aren't BaseParts.</p>
-</div>
-<h3 id="octagonunblacklistnoclipmonitoringparts"><code>Octagon.UnBlacklistNoClipMonitoringParts()</code></h3>
-<div class="highlight"><pre><span></span><code><span class="n">Octagon</span><span class="p">.</span><span class="n">UnBlacklistNoClipMonitoringParts</span><span class="p">(</span><span class="n">parts</span> <span class="p">:</span> <span class="n">table</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
-</code></pre></div>
-<p>Iterates through <code>parts</code> and removes the noclip black listed tag.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method ignores parts that aren't BaseParts.</p>
-</div>
+<p>Iterates through <code>parts</code> and removes the noclip black listed tag for <code>player</code> from each instance found.</p>
 <h3 id="octagontemporarilyblacklistplayerfrombeingmonitored"><code>Octagon.TemporarilyBlacklistPlayerFromBeingMonitored()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">Octagon</span><span class="p">.</span><span class="n">TemporarilyBlacklistPlayerFromBeingMonitored</span><span class="p">(</span>
     <span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">,</span>
@@ -830,14 +786,6 @@ through those parts even if they aren't <code>CanCollide</code> <code>true</code
 </tr>
 </tbody>
 </table>
-<h3 id="octagonisplayersubjecttobemonitored"><code>Octagon.IsPlayerSubjectToBeMonitored()</code></h3>
-<div class="highlight"><pre><span></span><code><span class="n">Server</span><span class="p">.</span><span class="n">IsPlayerSubjectToBeMonitored</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerSubjectToBeMonitored]</span>
-</code></pre></div>
-<p>Returns a boolean indicating if <code>player</code> is going to be monitored by Octagon.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method may temporarily yield the thread as it checks to see if the player is black listed through the <a href="https://github.com/SilentsReplacement/Octagon/blob/v0.1/src/Octagon/Server/Config.lua">Config</a> module which may send an GET HTTP request to retrieve the player's rank.</p>
-</div>
                 
               
               

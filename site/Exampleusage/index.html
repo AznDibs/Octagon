@@ -9,14 +9,14 @@
       
       
       
-        <link rel="canonical" href="https://example.com/Basicusage/">
+        <link rel="canonical" href="https://example.com/Exampleusage/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.5">
     
     
       
-        <title>Basic usage - Octagon</title>
+        <title>Example usage - Octagon</title>
       
     
     
@@ -66,6 +66,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#server" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -92,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Basic usage
+              Example usage
             
           </span>
         </div>
@@ -259,9 +264,44 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Example usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
-        Basic usage
+        Example usage
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#server" class="md-nav__link">
+    Server
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client" class="md-nav__link">
+    Client
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -493,66 +533,107 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#server" class="md-nav__link">
+    Server
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client" class="md-nav__link">
+    Client
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/SilentsReplacement/Octagon/edit/master/docs/Basicusage.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/SilentsReplacement/Octagon/edit/master/docs/Exampleusage.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                  <h1>Basic usage</h1>
+                  <h1>Example usage</h1>
                 
-                <p>Here's some basic serverside code (should be parented to <a href="https://developer.roblox.com/en-us/api-reference/class/ServerScriptService">ServerScriptService</a>) which starts up Octagon and listens to player's exploit detection flags:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">ReplicatedStorage</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">)</span>
-<span class="kd">local</span> <span class="n">Players</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;Players&quot;</span><span class="p">)</span>
+                <h3 id="server">Server</h3>
+<p>Here's some serverside code which starts up Octagon and  listens to a player’s physics detection flags:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">ReplicatedStorage</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">Players</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;Players&quot;</span><span class="p">)</span>
 
-<span class="kd">local</span> <span class="n">Octagon</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ReplicatedStorage</span><span class="p">.</span><span class="n">Octagon</span><span class="p">)</span>
-<span class="kd">local</span> <span class="n">PlayerProfileService</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">Octagon</span><span class="p">.</span><span class="n">PlayerProfileService</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">Octagon</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ReplicatedStorage</span><span class="p">.</span><span class="n">Octagon</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">PlayerProfileService</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">Octagon</span><span class="p">.</span><span class="n">PlayerProfileService</span><span class="p">)</span>
 
-<span class="c1">-- Start up Octagon:</span>
+<span class="c1">-- Start up Octagon:</span>
+
 <span class="n">Octagon</span><span class="p">.</span><span class="n">Start</span><span class="p">()</span>
 
-<span class="kd">local</span> <span class="kr">function</span> <span class="nf">PlayerAdded</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
-    <span class="kd">local</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">PlayerProfileService</span><span class="p">.</span><span class="n">GetPlayerProfile</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>  
+<span class="kd">local</span> <span class="kr">function</span> <span class="nf">PlayerAdded</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+    <span class="kd">local</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">PlayerProfileService</span><span class="p">.</span><span class="n">GetPlayerProfile</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>  
 
-    <span class="c1">-- Safe check as the player&#39;s profile will not exist if the player</span>
-    <span class="c1">-- isn&#39;t being monitored by the anti exploit:</span>
-    <span class="kr">if</span> <span class="ow">not</span> <span class="n">profile</span> <span class="kr">then</span>
-        <span class="kr">return</span> <span class="kc">nil</span>
-    <span class="kr">end</span>
+    <span class="c1">-- Safe check as the player&#39;s profile will not exist if the player</span>
+    <span class="c1">-- isn&#39;t being monitored by the anti exploit:</span>
 
-    <span class="c1">-- Listen to new physics detection flags:</span>
-    <span class="n">profile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlag</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">detectionFlag</span><span class="p">)</span>
-        <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s got flagged for %s&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">player</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">detectionFlag</span><span class="p">))</span>
-    <span class="kr">end</span><span class="p">)</span>
+    <span class="kr">if</span> <span class="ow">not</span> <span class="n">profile</span> <span class="kr">then</span>
+        <span class="kr">return</span> <span class="kc">nil</span>
+    <span class="kr">end</span>
 
-    <span class="kr">return</span> <span class="kc">nil</span>
+    <span class="c1">-- Listen to new physics detection flags:</span>
+    <span class="n">profile</span><span class="p">.</span><span class="n">OnPhysicsDetectionFlag</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;%s got flagged for %s&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">player</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">flag</span><span class="p">))</span>
+    <span class="kr">end</span><span class="p">)</span>
+
+    <span class="kr">return</span> <span class="kc">nil</span>
 <span class="kr">end</span>
 
-<span class="c1">-- Scripts are deferred when they run, handle the edge case where players are already</span>
-<span class="c1">-- in the game by the time this script runs:</span>
-<span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">player</span> <span class="kr">in</span> <span class="nb">ipairs</span><span class="p">(</span><span class="n">Players</span><span class="p">:</span><span class="n">GetPlayers</span><span class="p">())</span> <span class="kr">do</span>
-    <span class="n">task</span><span class="p">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">PlayerAdded</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+<span class="c1">-- Scripts are deferred when they run (in deferred signal behaviour), handle the edge case where players are already in the game by the time this script runs:</span>
+<span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">player</span> <span class="kr">in</span> <span class="nb">ipairs</span><span class="p">(</span><span class="n">Players</span><span class="p">:</span><span class="n">GetPlayers</span><span class="p">())</span> <span class="kr">do</span>
+    <span class="n">task</span><span class="p">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">PlayerAdded</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
 <span class="kr">end</span>
 
 <span class="n">Players</span><span class="p">.</span><span class="n">PlayerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="n">PlayerAdded</span><span class="p">)</span>
 </code></pre></div>
-<p>Okay, let's do it the more simpler way:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">ReplicatedStorage</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">)</span>
+<p>Okay, how about a very simple one?</p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">ReplicatedStorage</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">)</span>
 
-<span class="kd">local</span> <span class="n">Octagon</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ReplicatedStorage</span><span class="p">.</span><span class="n">Octagon</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">Octagon</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ReplicatedStorage</span><span class="p">.</span><span class="n">Octagon</span><span class="p">)</span>
 
 <span class="n">Octagon</span><span class="p">.</span><span class="n">Start</span><span class="p">()</span>
 </code></pre></div>
-<p>Additionally, here is a very basic client side code (should be parented to <a href="https://developer.roblox.com/en-us/api-reference/class/StarterPlayerScripts">StarterPlayerScripts</a>) which starts up Octagon on the client side. For clarification, it will monitor the player's humanoid state and stops them from bouncing high up when they fall to the ground (to prevent false positive) and resets their velocity when flinged (to prevent false positive).</p>
-<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">ReplicatedStorage</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">)</span>
+<hr />
+<h3 id="client">Client</h3>
+<p>Additionally, here is some basic client side code (parented to <a href="https://developer.roblox.com/en-us/api-reference/class/StarterPlayerScripts">StarterPlayerScripts</a>) which starts up Octagon on the client side.Octagon on the client side will monitor the player's humanoid state and stops the player from bouncing high up when they fall to the ground (to prevent a false flag) and resets their velocity when flinged (to prevent a false flag).</p>
+<div class="highlight"><pre><span></span><code><span class="kd">local</span> <span class="n">ReplicatedStorage</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">)</span>
 
-<span class="kd">local</span> <span class="n">Octagon</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ReplicatedStorage</span><span class="p">.</span><span class="n">Octagon</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">Octagon</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ReplicatedStorage</span><span class="p">.</span><span class="n">Octagon</span><span class="p">)</span>
 
-<span class="c1">-- Start up octagon:</span>
+<span class="c1">-- Start up octagon:</span>
 <span class="n">Octagon</span><span class="p">.</span><span class="n">Start</span><span class="p">()</span>
 </code></pre></div>
                 

@@ -257,8 +257,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../Basicusage/" class="md-nav__link">
-        Basic usage
+      <a href="../Exampleusage/" class="md-nav__link">
+        Example usage
       </a>
     </li>
   
@@ -615,7 +615,7 @@
 <p>This is due to HTTP requests failing in a rare case, as Octagon checks player's group rank which send in an internal HTTP GET request to determine if they are the owner of the game's group or to determine if they are black listed from being monitored. </p>
 <p>If that is not the case, then the problem lies with <a href="https://developer.roblox.com/en-us/api-reference/property/DataModel/CreatorId">game.CreatorId</a> returning an invalid userid of the game's owner's actual user id due to internal reasons. This only happens in Studio and make sure to test this out in an actual published game.</p>
 <h2 id="players-being-flagged-for-serverside-teleportation">Players being flagged for serverside teleportation</h2>
-<p>Octagon will respect serverside teleportations, walk speed, velocity, jump power changes, etc. However, Octagon will not respect serverside teleportation of the player through the changing of <a href="https://developer.roblox.com/en-us/api-reference/property/BasePart/Position">Position</a>, but rather through <a href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame">CFrame</a> for internal reasons. Make sure you change the <a href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame">CFrame</a> of the player's primary part, not <a href="https://developer.roblox.com/en-us/api-reference/property/BasePart/Position">Position</a>.</p>
+<p>Octagon will respect serverside teleportations, walk speed, velocity, jump power changes, etc. However, Octagon will not respect serverside teleportation of the player through the changing of <a href="https://developer.roblox.com/en-us/api-reference/property/BasePart/Position">Position</a>, but rather through <a href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame">CFrame</a> for internal reasons. Make sure you change the <a href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame">CFrame</a> of the player's primary part, not <a href="https://developer.roblox.com/en-us/api-reference/property/BasePart/Position">Position</a> in order to safely teleport the player or mess with their position.</p>
                 
               
               

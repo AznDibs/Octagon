@@ -255,8 +255,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Basicusage/" class="md-nav__link">
-        Basic usage
+      <a href="../../Exampleusage/" class="md-nav__link">
+        Example usage
       </a>
     </li>
   
@@ -516,6 +516,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#utilisplayergameowner" class="md-nav__link">
+    Util.IsPlayerGameOwner()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#utilisplayersubjecttobemonitored" class="md-nav__link">
+    Util.IsPlayerSubjectToBeMonitored()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -653,6 +667,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#utilisplayergameowner" class="md-nav__link">
+    Util.IsPlayerGameOwner()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#utilisplayersubjecttobemonitored" class="md-nav__link">
+    Util.IsPlayerSubjectToBeMonitored()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -671,7 +699,7 @@
                 
                 
                 <h1 id="util">Util</h1>
-<p>The Util module is a simply module which provides a few basic instance methods associated to instances and players.</p>
+<p>The Util module is a simple module which provides methods associated to instances and players.</p>
 <h3 id="utilgetplayerequippedtools"><code>Util.GetPlayerEquippedTools()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">GetPlayerEquippedTools</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; table [equippedTools], number [equippedToolCount]</span>
 </code></pre></div>
@@ -687,7 +715,7 @@
 <h3 id="utilisinstancedestroyed"><code>Util.IsInstanceDestroyed()</code></h3>
 <div class="highlight"><pre><span></span><code> <span class="n">Util</span><span class="p">.</span><span class="n">IsInstanceDestroyed</span><span class="p">(</span><span class="n">instance</span> <span class="p">:</span> <span class="n">Instance</span><span class="p">)</span> <span class="c1">--&gt; boolean[IsInstanceDestroyed]</span>
 </code></pre></div>
-<p>Returns a boolean indicating if <code>instance</code> is destroyed, i.e via <a href="https://developer.roblox.com/en-us/api-reference/function/Instance/Destroy">Instance:Destroy</a>.</p>
+<p>Returns a boolean indicating if <code>instance</code> is destroyed, i.e via <a href="https://developer.roblox.com/en-us/api-reference/function/Instance/Destroy">Instance:Destroy()</a>.</p>
 <h3 id="utilsetbasepartnetworkowner"><code>Util.SetBasePartNetworkOwner()</code></h3>
 <div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">SetBasePartNetworkOwner</span><span class="p">(</span><span class="n">basePart</span> <span class="p">:</span> <span class="n">BasePart</span><span class="p">,</span> <span class="n">networkOwner</span> <span class="p">:</span> <span class="n">player</span> <span class="o">|</span> <span class="kc">nil</span><span class="p">)</span> <span class="c1">--&gt; nil []</span>
 </code></pre></div>
@@ -719,6 +747,22 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method will return <code>false</code> if <code>player</code>'s character isn't loaded.</p>
+</div>
+<h3 id="utilisplayergameowner"><code>Util.IsPlayerGameOwner()</code></h3>
+<div class="highlight"><pre><span></span><code><span class="n">Util</span><span class="p">.</span><span class="n">IsPlayerGameOwner</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerGameOwner]</span>
+</code></pre></div>
+<p>Returns a boolean indicating if the player is the owner of the game or the owner of the group the game is in.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method may temporarily yield the thread if the game is under a group as it will send an GET HTTP request to retrieve <code>player</code>'s rank in order to determine if <code>player</code> is the owner of that group.</p>
+</div>
+<h3 id="utilisplayersubjecttobemonitored"><code>Util.IsPlayerSubjectToBeMonitored()</code></h3>
+<div class="highlight"><pre><span></span><code><span class="n">Server</span><span class="p">.</span><span class="n">IsPlayerSubjectToBeMonitored</span><span class="p">(</span><span class="n">player</span> <span class="p">:</span> <span class="n">Player</span><span class="p">)</span> <span class="c1">--&gt; boolean [IsPlayerSubjectToBeMonitored]</span>
+</code></pre></div>
+<p>Returns a boolean indicating if <code>player</code> is going to be monitored by Octagon.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method may temporarily yield the thread as it checks to see if the player is black listed through the <a href="https://github.com/SilentsReplacement/Octagon/blob/main/src/Octagon/Server/Config.lua">Config</a> module which may send an GET HTTP request to retrieve the player's rank.</p>
 </div>
                 
               
