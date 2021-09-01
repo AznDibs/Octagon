@@ -15,7 +15,6 @@
 
 local PlayerProfileService = {
 	LoadedPlayerProfiles = {},
-	_areSignalsInit = false,
 	_areModulesInit = false,
 	_destroyedPlayerProfiles = {},
 }
@@ -23,10 +22,14 @@ local PlayerProfileService = {
 local Shared = script:FindFirstAncestor("Octagon").Shared
 local Signal = require(Shared.Signal)
 local SharedConstants = require(Shared.SharedConstants)
+local Maid = require(Shared.Maid)
+local InitMaidFor = require(Shared.InitMaidFor)
+local DestroyAllMaids = require(Shared.DestroyAllMaids)
 
 PlayerProfileService.OnPlayerProfileLoaded = Signal.new()
 PlayerProfileService.OnPlayerProfileDestroyed = Signal.new()
 PlayerProfileService.OnPlayerProfileInit = Signal.new()
+PlayerProfileService._maid = Maid.new()
 
 function PlayerProfileService.ArePlayerProfilesLoaded()
 	return next(PlayerProfileService.LoadedPlayerProfiles) ~= nil
@@ -36,6 +39,18 @@ function PlayerProfileService.DestroyLoadedPlayerProfiles()
 	for _, playerProfile in pairs(PlayerProfileService.LoadedPlayerProfiles) do
 		playerProfile:Destroy()
 	end
+
+	return nil 
+end
+
+function PlayerProfileService.Init()
+	PlayerProfileService._initSignals()
+
+	return nil
+end
+
+function PlayerProfileService.Cleanup()
+	DestroyAllMaids(PlayerProfileService)
 
 	return nil
 end
@@ -93,6 +108,7 @@ function PlayerProfileService._waitForPlayerProfile(player)
 end
 
 function PlayerProfileService._initSignals()
+	InitMaidFor(PlayerProfileService, PlayerProfileService._maid, Signal.IsSignal)
 	PlayerProfileService._areSignalsInit = true
 
 	PlayerProfileService.OnPlayerProfileLoaded:Connect(function(playerProfile)
@@ -112,10 +128,6 @@ function PlayerProfileService._initModules()
 	PlayerProfileService.PlayerProfile = script.PlayerProfile
 
 	return nil
-end
-
-if not PlayerProfileService._areSignalsInit then
-	PlayerProfileService._initSignals()
 end
 
 if not PlayerProfileService._areModulesInit then
