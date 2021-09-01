@@ -1,9 +1,12 @@
 # PlayerProfile
 
-A player profile in layman's terms, is simply a table which contains necessary data for Octagon and the developer to work with. 
+A player profile in layman's terms, is simply a table which contains necessary data for 
+Octagon and the developer to work with. 
 
 !!!note
-    To retrieve a player profile, only use [PlayerProfileService.GetPlayerProfile()](https://silentsreplacement.github.io/Octagon/Server/PlayerProfileService/#playerprofileservicegetplayerprofile).
+    - This section does not include additional methods which are to be used by Octagon internally. It only includes the necessary information only.
+
+    - To retrieve a player profile, only use [PlayerProfileService.GetPlayerProfile()](https://silentsreplacement.github.io/Octagon/Server/PlayerProfileService/#playerprofileservicegetplayerprofile).
 
 ### `PlayerProfile.IsPlayerProfile()`
 
@@ -63,28 +66,28 @@ The number of physics detection flags accumulated by the player who owns this pr
 ### `PlayerProfile.OnPhysicsDetectionFlag`
 
 ```lua
-PlayerProfile.OnPhysicsDetectionFlag : Signal (detectionFlag : string)
+PlayerProfile.OnPhysicsDetectionFlag : Signal (flag : string)
 ```
 
 A signal which is fired whenever the player is flagged by a detection through [PlayerProfile:RegisterPhysicsDetectionFlag](https://silentsreplacement.github.io/Octagon/Server/PlayerProfile/#playerprofileregisterphysicsdetectionflag). 
 
 ```lua
-PlayerProfile.OnPhysicsDetectionFlag:Connect(function(detectionFlag) 
-    warn(("%s was flagged for %s"):format(PlayerProfile.Player, detectionFlag)) 
+PlayerProfile.OnPhysicsDetectionFlag:Connect(function(flag) 
+    warn(("%s was flagged for %s"):format(PlayerProfile.Player, flag)) 
 end) 
 ```
 
 ### `PlayerProfile.OnPhysicsDetectionFlagExpire`
 
 ```lua
-PlayerProfile.OnPhysicsDetectionFlagExpire : Signal (expiredDetectionFlag : string)
+PlayerProfile.OnPhysicsDetectionFlagExpire : Signal (expiredFlag : string)
 ```
 
 A signal which is fired whenever the player's flag by a physics detection is expired periodically. When this signal is fired, the physics detections by default, will give back the network ownership from the server to the player and return the player to a normal state.
 
 ```lua
-PlayerProfile.OnPhysicsDetectionFlagExpire:Connect(function(expiredDetectionFlag) 
-    warn(("%s's %s flag has been expired"):format(PlayerProfile.Player, expiredDetectionFlag)) 
+PlayerProfile.OnPhysicsDetectionFlagExpire:Connect(function(expiredFlag) 
+    warn(("%s's %s flag has been expired"):format(PlayerProfile.Player, expiredFlag)) 
 end) 
 ```
 

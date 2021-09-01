@@ -2,6 +2,9 @@
 
 The PlayerProfileService module provides methods to access player profiles easily.
 
+!!!note
+    This section does not include additional methods which are to be used by Octagon internally. It only includes the necessary information only.
+
 ### `PlayerProfileService.OnPlayerProfileLoaded`
 
 ```lua

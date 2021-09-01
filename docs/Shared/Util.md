@@ -1,6 +1,6 @@
 # Util
 
-The Util module is a simply module which provides a few basic instance methods associated to instances and players.
+The Util module is a simple module which provides methods associated to instances and players.
 
 ### `Util.GetPlayerEquippedTools()`
 
@@ -32,7 +32,7 @@ Returns a boolean indicating if `basePart` is falling, i.e `basePart.Position.Y`
  Util.IsInstanceDestroyed(instance : Instance) --> boolean[IsInstanceDestroyed]
 ```
 
-Returns a boolean indicating if `instance` is destroyed, i.e via [Instance:Destroy](https://developer.roblox.com/en-us/api-reference/function/Instance/Destroy).
+Returns a boolean indicating if `instance` is destroyed, i.e via [Instance:Destroy()](https://developer.roblox.com/en-us/api-reference/function/Instance/Destroy).
 
 ### `Util.SetBasePartNetworkOwner()`
 
@@ -77,3 +77,24 @@ Returns a boolean indicating if `player` has the primary part and a humanoid ins
 
 !!!note
     This method will return `false` if `player`'s character isn't loaded.
+
+### `Util.IsPlayerGameOwner()`
+
+```lua
+Util.IsPlayerGameOwner(player : Player) --> boolean [IsPlayerGameOwner]
+```
+
+Returns a boolean indicating if the player is the owner of the game or the owner of the group the game is in.
+
+!!!note
+    This method may temporarily yield the thread if the game is under a group as it will send an GET HTTP request to retrieve `player`'s rank in order to determine if `player` is the owner of that group.
+
+### `Util.IsPlayerSubjectToBeMonitored()`
+```lua
+Server.IsPlayerSubjectToBeMonitored(player : Player) --> boolean [IsPlayerSubjectToBeMonitored]
+```
+
+Returns a boolean indicating if `player` is going to be monitored by Octagon.
+
+!!!note
+    This method may temporarily yield the thread as it checks to see if the player is black listed through the [Config](https://github.com/SilentsReplacement/Octagon/blob/main/src/Octagon/Server/Config.lua) module which may send an GET HTTP request to retrieve the player's rank.
