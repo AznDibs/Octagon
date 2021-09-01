@@ -7,7 +7,7 @@
         maxTries : number | nil, 
         retryInterval : number | nil, 
         argsData : table
-    ) --> any [tuple]
+    ) --> boolean [wasSuccessful], response : any [tuple]
 ]]
 
 local LocalConstants = {
@@ -15,25 +15,24 @@ local LocalConstants = {
 	DefaultFailedPcallRetryInterval = 4,
 }
 
-return function(maxTries, retryInterval, argsData)
-	retryInterval = retryInterval or LocalConstants.DefaultFailedPcallRetryInterval
-	maxTries = maxTries or LocalConstants.DefaultFailedPcallTries
+return function(maxTries, retryInterval, arguments)
+	local retryInterval = retryInterval or LocalConstants.DefaultFailedPcallRetryInterval
+	local maxTries = maxTries or LocalConstants.DefaultFailedPcallTries
 
 	local tries = 0
+	local wasSuccessfull, response = nil, nil
 
 	while tries < maxTries do
-		local wasSuccessfull, response = pcall(argsData[1], select(2, table.unpack(argsData)))
+		wasSuccessfull, response = pcall(arguments[1], select(2, table.unpack(arguments)))
 
 		if wasSuccessfull then
-			return wasSuccessfull, response
+			break
 		else
 			tries += 1
-
-			if tries == maxTries then
-				return wasSuccessfull, response
-			end
 
 			task.wait(retryInterval)
 		end
 	end
+
+	return wasSuccessfull, response
 end
