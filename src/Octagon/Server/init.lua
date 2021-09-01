@@ -142,12 +142,22 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 	return nil
 end
 
-function Server.BlacklistNoClipMonitoringParts(parts)
+function Server.BlacklistNoClipMonitoringPartsForPlayer(player, parts)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Octagon.BlacklistNoClipMonitoringPartsForPlayer()",
+			"Player",
+			typeof(player)
+		)
+	)
+
 	assert(
 		typeof(parts) == "table",
 		SharedConstants.ErrorMessages.InvalidArgument:format(
-			1,
-			"Server.BlacklistNoClipMonitoringParts()",
+			2,
+			"Octagon.BlacklistNoClipMonitoringParts()",
 			"table",
 			typeof(parts)
 		)
@@ -158,13 +168,25 @@ function Server.BlacklistNoClipMonitoringParts(parts)
 			continue
 		end
 
-		CollectionService:AddTag(part, SharedConstants.Tags.NoClipBlackListed)
+		CollectionService:AddTag(
+			part,
+			SharedConstants.Tags.NoClipBlackListed:format(player.Name)
+		)
 	end
 
 	return nil
 end
 
-function Server.UnBlacklistNoClipMonitoringParts(parts)
+function Server.UnBlacklistNoClipMonitoringPartsForPlayer(player, parts)
+	assert(
+		typeof(player) == "Instance" and player:IsA("Player"),
+		SharedConstants.ErrorMessages.InvalidArgument:format(
+			1,
+			"Octagon.UnBlacklistNoClipMonitoringPartsForPlayer()",
+			"Player",
+			typeof(player)
+		)
+	)
 	assert(
 		typeof(parts) == "table",
 		SharedConstants.ErrorMessages.InvalidArgument:format(
@@ -180,7 +202,10 @@ function Server.UnBlacklistNoClipMonitoringParts(parts)
 			continue
 		end
 
-		CollectionService:RemoveTag(part, SharedConstants.Tags.NoClipBlackListed)
+		CollectionService:RemoveTag(
+			part,
+			SharedConstants.Tags.NoClipBlackListed:format(player.Name)
+		)
 	end
 
 	return nil
@@ -387,21 +412,22 @@ function Server._isPlayerBlackListedFromBeingMonitored(player)
 end
 
 function Server._startHeartBeatUpdate()
-	local VerticalSpeed = require(script.Detections.Physics.VerticalSpeed)
-	local HorizontalSpeed = require(script.Detections.Physics.HorizontalSpeed)
-
 	return Server._maid:AddTask(RunService.Heartbeat:Connect(function(dt)
-		Server._heartBeatUpdate(dt, VerticalSpeed, HorizontalSpeed)
+		Server._heartBeatUpdate(
+			dt,
+			script.Detections.Physics.VerticalSpeed,
+			script.Detections.Physics.HorizontalSpeed
+		)
 	end))
 end
 
 function Server._cleanupDetections()
-	for _, detection in pairs(Server._detectionsInit.NonPhysics) do
-		require(detection).Cleanup()
+	for _, module in pairs(Server._detectionsInit.NonPhysics) do
+		require(module).Cleanup()
 	end
 
-	for _, detection in pairs(Server._detectionsInit.Physics) do
-		require(detection).Cleanup()
+	for _, module in pairs(Server._detectionsInit.Physics) do
+		require(module).Cleanup()
 	end
 
 	return nil
@@ -441,10 +467,10 @@ function Server._heartBeatUpdate(dt, verticalSpeed, horizontalSpeed)
 		local player = playerProfile.Player
 		local primaryPart = player.Character.PrimaryPart
 
-		for detectionName, detection in pairs(Server._detectionsInit.Physics) do
-			detection = require(detection)
+		for detection, module in pairs(Server._detectionsInit.Physics) do
+			local requiredModule = require(module)
 
-			local detectionData = playerProfile.DetectionData[detectionName]
+			local detectionData = playerProfile.DetectionData[detection]
 			local physicsData = detectionData.PhysicsData
 			local lastCFrame = physicsData.LastCFrame
 
@@ -453,20 +479,20 @@ function Server._heartBeatUpdate(dt, verticalSpeed, horizontalSpeed)
 			local lastStartDt = detectionData.LastStartDt
 			local shouldStartDetection = true
 
-			if lastStartDt >= detection.StartInterval then
+			if lastStartDt >= requiredModule.StartInterval then
 				if lastCFrame ~= nil then
 					-- Safe check to avoid false positives:
 					if
 						Util.IsBasePartFalling(primaryPart, lastCFrame.Position)
-							and detection == verticalSpeed
+							and module == verticalSpeed
 						or not Util.IsPlayerWalking(player, lastCFrame.Position)
-							and detection == horizontalSpeed
+							and module == horizontalSpeed
 					then
 						shouldStartDetection = false
 					end
 
 					if shouldStartDetection then
-						detection.Start(detectionData, playerProfile, lastStartDt)
+						requiredModule.Start(detectionData, playerProfile, lastStartDt)
 					end
 				end
 
@@ -485,13 +511,20 @@ function Server._initPlayer(playerProfile)
 	local humanoid = player.Character.Humanoid
 
 	if Server._arePhysicsDetectionsInit then
-		playerProfile.Maid:AddTask(primaryPart:GetPropertyChangedSignal("CFrame"):Connect(function()
-			playerProfile:_updateAllDetectionPhysicsData("LastCFrame", primaryPart.CFrame)
-		end))
+		playerProfile.Maid:AddTask(
+			primaryPart:GetPropertyChangedSignal("CFrame"):Connect(function()
+				playerProfile:_updateAllDetectionPhysicsData("LastCFrame", primaryPart.CFrame)
+			end)
+		)
 
-		playerProfile.Maid:AddTask(primaryPart:GetPropertyChangedSignal("Parent"):Connect(function()
-			Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, player.CharacterAdded)
-		end))
+		playerProfile.Maid:AddTask(
+			primaryPart:GetPropertyChangedSignal("Parent"):Connect(function()
+				Server.TemporarilyBlacklistPlayerFromBeingMonitored(
+					player,
+					player.CharacterAdded
+				)
+			end)
+		)
 
 		playerProfile.Maid:AddTask(
 			primaryPart:GetPropertyChangedSignal("AssemblyLinearVelocity"):Connect(function()
@@ -501,22 +534,24 @@ function Server._initPlayer(playerProfile)
 			end)
 		)
 
-		playerProfile.Maid:AddTask(humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
-			if not humanoid.SeatPart then
-				return
-			end
+		playerProfile.Maid:AddTask(
+			humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
+				if not humanoid.SeatPart then
+					return
+				end
 
-			-- Player is in seat, temporarily black list the player once they get out to
-			-- prevent horizontal / vertical speed false positive:
-			Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
-				humanoid.SeatPart:GetPropertyChangedSignal("Occupant"):Wait()
-				-- Player has got out of the seat, but yield for a second before
-				-- finishing execution to prevent physics detections from immediately
-				-- starting. This prevents false positives when a player gets out of a
-				-- seat quickly:
-				task.wait(1)
+				-- Player is in seat, temporarily black list the player once they get out to
+				-- prevent horizontal / vertical speed false positive:
+				Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
+					humanoid.SeatPart:GetPropertyChangedSignal("Occupant"):Wait()
+					-- Player has got out of the seat, but yield for a second before
+					-- finishing execution to prevent physics detections from immediately
+					-- starting. This prevents false positives when a player gets out of a
+					-- seat quickly:
+					task.wait(1)
+				end)
 			end)
-		end))
+		)
 	end
 end
 
