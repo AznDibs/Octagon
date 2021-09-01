@@ -78,7 +78,10 @@ function NoClip._isNoClipping(player, physicsData)
 
 		-- Safe check to prevent false positives:
 		if
-			CollectionService:HasTag(instance, SharedConstants.Tags.NoClipBlackListed)
+			CollectionService:HasTag(
+				instance,
+				SharedConstants.Tags.NoClipBlackListed:format(player.Name)
+			)
 			or not primaryPart:CanCollideWith(instance)
 			or Players:GetPlayerFromCharacter(instance.Parent)
 			or Players:GetPlayerFromCharacter(instance.Parent.Parent)
