@@ -12,8 +12,6 @@
 	Server.IsStopped() --> boolean [IsStopped]
     Server.BlacklistNoClipMonitoringParts(parts : table) --> nil []
     Server.UnBlacklistNoClipMonitoringParts(parts : table) --> nil []
-    Server.IsPlayerSubjectToBeMonitored(player : Player) --> boolean [IsPlayerSubjectToBeMonitored]
-    Server.IsPlayerGameOwner(player : Player) --> boolean [IsPlayerGameOwner]
     Server.TemporarilyBlacklistPlayerFromBeingMonitored(
         player : Player,
         value : number | function | RBXScriptSignal | Signal
@@ -34,13 +32,10 @@ local Server = {
 	_isStarted = false,
 	_isStopped = false,
 	_heartBeatScriptConnection = nil,
-
-	_playersInitialized = {},
-	_shouldMonitorPlayerResultCache = {},
-	_isPlayerGameOwnerResultCache = {},
 }
 
 local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
 local CollectionService = game:GetService("CollectionService")
 
@@ -48,69 +43,17 @@ local PlayerProfileService = require(script.PlayerProfileService)
 local PlayerProfile = require(PlayerProfileService.PlayerProfile)
 local Signal = require(script.Parent.Shared.Signal)
 local Maid = require(script.Parent.Shared.Maid)
-local RetryPcall = require(script.Parent.Shared.RetryPcall)
 local Config = require(script.Config)
 local SharedConstants = require(script.Parent.Shared.SharedConstants)
 local DestroyAllMaids = require(script.Parent.Shared.DestroyAllMaids)
 local InitMaidFor = require(script.Parent.Shared.InitMaidFor)
 local Util = require(script.Parent.Shared.Util)
 
-local LocalConstants = {
-	FailedPcallRetryInterval = 5,
-	MaxFailedPcallTries = 5,
-	OwnerGroupRank = 255,
-	DefaultPlayerGroupRank = 0,
-}
-
 Server._maid = Maid.new()
 Server._onStop = Signal.new()
 
 function Server.AreMonitoringPlayerProfilesLeft()
 	return next(Server.MonitoringPlayerProfiles) ~= nil
-end
-
-function Server.IsPlayerGameOwner(player)
-	assert(
-		typeof(player) == "Instance" and player:IsA("Player"),
-		SharedConstants.ErrorMessages.InvalidArgument:format(
-			1,
-			"Octagon.IsPlayerGameOwner()",
-			"Player",
-			typeof(player)
-		)
-	)
-
-	local cachedResult = Server._isPlayerGameOwnerResultCache[player.UserId]
-
-	if cachedResult ~= nil then
-		if Signal.IsSignal(cachedResult) then
-			-- The cached result is currently a signal which means that this method
-			-- was called again while it was performing a lookup for the same
-			-- argument, wait until that signal fires and return the results
-			-- instead of performing an other unnecessary lookup:
-			return cachedResult:Wait()
-		else
-			return cachedResult
-		end
-	end
-
-	local isPlayerGameOwner = false
-	local onIsPlayerGameOwnerResult = Signal.new()
-	Server._isPlayerGameOwnerResultCache[player.UserId] = onIsPlayerGameOwnerResult
-
-	if game.CreatorType == Enum.CreatorType.Group then
-		isPlayerGameOwner = Server._getPlayerRankInGroup(player, game.CreatorId)
-			== LocalConstants.OwnerGroupRank
-	else
-		isPlayerGameOwner = player.UserId == game.CreatorId
-	end
-
-	onIsPlayerGameOwnerResult:Fire(isPlayerGameOwner)
-	onIsPlayerGameOwnerResult:Destroy()
-
-	Server._isPlayerGameOwnerResultCache[player.UserId] = isPlayerGameOwner
-
-	return isPlayerGameOwner
 end
 
 function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
@@ -199,91 +142,6 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 	return nil
 end
 
-function Server.IsPlayerSubjectToBeMonitored(player)
-	assert(
-		typeof(player) == "Instance" and player:IsA("Player"),
-		SharedConstants.ErrorMessages.InvalidArgument:format(
-			1,
-			"Octagon.IsPlayerSubjectToBeMonitored()",
-			"Player",
-			typeof(player)
-		)
-	)
-
-	return Server._shouldMonitorPlayer(player)
-end
-
-function Server._shouldMonitorPlayer(player)
-	local cachedResult = Server._shouldMonitorPlayerResultCache[player.UserId]
-
-	if cachedResult ~= nil then
-		if Signal.IsSignal(cachedResult) then
-			-- The cached result is currently a signal which means that this method
-			-- was called again while it was performing a lookup for the same
-			-- argument, wait until that signal fires and return the results
-			-- instead of performing an other unnecessary lookup:
-			return cachedResult:Wait()
-		else
-			return cachedResult
-		end
-	end
-
-	local onShouldMonitorPlayerResult = Signal.new()
-	Server._shouldMonitorPlayerResultCache[player] = onShouldMonitorPlayerResult
-
-	local isPlayerBlackListedFromBeingMonitored =
-		Server._isPlayerBlackListedFromBeingMonitored(
-			player
-		)
-
-	if not isPlayerBlackListedFromBeingMonitored then
-		local isPlayerGameOwner = Server.IsPlayerGameOwner(player)
-
-		isPlayerBlackListedFromBeingMonitored = isPlayerGameOwner
-			and not Config.ShouldMonitorGameOwner
-
-		if not isPlayerBlackListedFromBeingMonitored and not isPlayerGameOwner then
-			for groupId, config in pairs(Config.PlayersBlackListedFromBeingMonitored.GroupConfig) do
-				local minimumPlayerGroupRank = config.MinimumPlayerGroupRank
-				local requiredPlayerGroupRank = config.RequiredPlayerGroupRank
-
-				assert(
-					typeof(groupId) == "number",
-					"Key in Config.GroupConfig must be a number (group id)"
-				)
-
-				assert(
-					typeof(minimumPlayerGroupRank) == "number"
-						or typeof(requiredPlayerGroupRank) == "number",
-					(
-						"RequiredPlayerGroupRank or MinimumPlayerGroupRank must be a number in Config.PlayersBlackListedFromBeingMonitored.GroupConfig[%d]"
-					):format(groupId)
-				)
-
-				local playerGroupRank = Server._getPlayerRankInGroup(player, groupId)
-
-				isPlayerBlackListedFromBeingMonitored = playerGroupRank
-						== requiredPlayerGroupRank
-					or minimumPlayerGroupRank
-						and playerGroupRank >= minimumPlayerGroupRank
-
-				if isPlayerBlackListedFromBeingMonitored then
-					break
-				end
-			end
-		end
-	end
-
-	onShouldMonitorPlayerResult:Fire(not isPlayerBlackListedFromBeingMonitored)
-	onShouldMonitorPlayerResult:Destroy()
-
-	-- Cache lookup result for later reuse:
-	Server._shouldMonitorPlayerResultCache[player.UserId] =
-		not isPlayerBlackListedFromBeingMonitored
-
-	return not isPlayerBlackListedFromBeingMonitored
-end
-
 function Server.BlacklistNoClipMonitoringParts(parts)
 	assert(
 		typeof(parts) == "table",
@@ -296,6 +154,10 @@ function Server.BlacklistNoClipMonitoringParts(parts)
 	)
 
 	for _, part in ipairs(parts) do
+		if not part:IsA("Instance") then
+			continue
+		end
+
 		CollectionService:AddTag(part, SharedConstants.Tags.NoClipBlackListed)
 	end
 
@@ -314,6 +176,10 @@ function Server.UnBlacklistNoClipMonitoringParts(parts)
 	)
 
 	for _, part in ipairs(parts) do
+		if not part:IsA("Instance") then
+			continue
+		end
+
 		CollectionService:RemoveTag(part, SharedConstants.Tags.NoClipBlackListed)
 	end
 
@@ -333,7 +199,7 @@ function Server.Start()
 		local function PlayerAdded(player)
 			-- Do not create a player profile if there are no detections available
 			-- or if the player is black listed from being monitored:
-			if not Server._shouldMonitorPlayer(player) then
+			if not Util.IsPlayerSubjectToBeMonitored(player) then
 				table.insert(Server.BlacklistedPlayers, player)
 				return nil
 			elseif
@@ -374,11 +240,13 @@ function Server.Start()
 					SharedConstants.Tags.PrimaryPart
 				)
 
+				Server._initPlayer(playerProfile)
 				Server._startNonPhysicsDetections(playerProfile)
 				Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
 					playerProfile:SetDeinitTag()
 					playerProfile:Init(Server._detectionsInit.Physics)
 				end)
+
 				return nil
 			end
 
@@ -611,6 +479,47 @@ function Server._heartBeatUpdate(dt, verticalSpeed, horizontalSpeed)
 	return nil
 end
 
+function Server._initPlayer(playerProfile)
+	local player = playerProfile.Player
+	local primaryPart = player.Character.PrimaryPart
+	local humanoid = player.Character.Humanoid
+
+	if Server._arePhysicsDetectionsInit then
+		playerProfile.Maid:AddTask(primaryPart:GetPropertyChangedSignal("CFrame"):Connect(function()
+			playerProfile:_updateAllDetectionPhysicsData("LastCFrame", primaryPart.CFrame)
+		end))
+
+		playerProfile.Maid:AddTask(primaryPart:GetPropertyChangedSignal("Parent"):Connect(function()
+			Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, player.CharacterAdded)
+		end))
+
+		playerProfile.Maid:AddTask(
+			primaryPart:GetPropertyChangedSignal("AssemblyLinearVelocity"):Connect(function()
+				Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
+					task.wait(primaryPart.AssemblyLinearVelocity.Magnitude / Workspace.Gravity)
+				end)
+			end)
+		)
+
+		playerProfile.Maid:AddTask(humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
+			if not humanoid.SeatPart then
+				return
+			end
+
+			-- Player is in seat, temporarily black list the player once they get out to
+			-- prevent horizontal / vertical speed false positive:
+			Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
+				humanoid.SeatPart:GetPropertyChangedSignal("Occupant"):Wait()
+				-- Player has got out of the seat, but yield for a second before
+				-- finishing execution to prevent physics detections from immediately
+				-- starting. This prevents false positives when a player gets out of a
+				-- seat quickly:
+				task.wait(1)
+			end)
+		end))
+	end
+end
+
 function Server._setPlayerPrimaryNetworkOwner(player)
 	local primaryPart = player.Character and player.Character.PrimaryPart
 	if not primaryPart then
@@ -628,33 +537,6 @@ function Server._startNonPhysicsDetections(playerProfile)
 	end
 
 	return nil
-end
-
-function Server._getPlayerRankInGroup(player, groupId)
-	local wasSuccessFull, response = RetryPcall(
-		LocalConstants.MaxFailedPcallTries,
-		LocalConstants.FailedPcallRetryInterval,
-
-		{
-			player.GetRankInGroup,
-			player,
-			groupId,
-		}
-	)
-
-	if not wasSuccessFull then
-		warn(
-			("%s: Failed to get %s's group rank because %s"):format(
-				SharedConstants.FormattedOutputMessages.Octagon.Debug,
-				player.Name,
-				response
-			)
-		)
-
-		return LocalConstants.DefaultPlayerGroupRank
-	else
-		return response
-	end
 end
 
 function Server._initModules()
