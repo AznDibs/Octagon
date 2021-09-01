@@ -360,18 +360,11 @@ function Server.Start()
 
 			local function CharacterAdded(character)
 				playerProfile.DetectionMaid:Cleanup()
-				Server._startNonPhysicsDetections(playerProfile)
 
-				-- The player's character will be loaded again if they
-				-- don't have either of these based on the default detections:
 				if not Util.DoValidPlayerBodyPartsExist(player) then
+					player:LoadCharacter()
 					return nil
 				end
-
-				Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
-					playerProfile:SetDeinitTag()
-					playerProfile:Init(Server._detectionsInit.Physics)
-				end)
 
 				-- Setup a tag to know if a certain part is a primary part if
 				-- character.PrimaryPart is nil. This is used in primary part deletion
@@ -381,6 +374,11 @@ function Server.Start()
 					SharedConstants.Tags.PrimaryPart
 				)
 
+				Server._startNonPhysicsDetections(playerProfile)
+				Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, function()
+					playerProfile:SetDeinitTag()
+					playerProfile:Init(Server._detectionsInit.Physics)
+				end)
 				return nil
 			end
 
@@ -398,10 +396,9 @@ function Server.Start()
 					Server.BlacklistedPlayers,
 					table.find(Server.BlacklistedPlayers, player)
 				)
-				return nil
+			else
+				playerProfile:Destroy()
 			end
-
-			playerProfile:Destroy()
 
 			return nil
 		end
