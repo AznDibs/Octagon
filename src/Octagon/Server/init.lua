@@ -45,6 +45,7 @@ local RunService = game:GetService("RunService")
 local CollectionService = game:GetService("CollectionService")
 
 local PlayerProfileService = require(script.PlayerProfileService)
+local PlayerProfile = require(PlayerProfileService.PlayerProfile)
 local Signal = require(script.Parent.Shared.Signal)
 local Maid = require(script.Parent.Shared.Maid)
 local RetryPcall = require(script.Parent.Shared.RetryPcall)
@@ -156,10 +157,9 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 		end
 	end
 
-	local serverOnStopConnection = nil
-	serverOnStopConnection = Server._onStop:Connect(function()
+	local onStopConnection = nil
+	onStopConnection = Server._onStop:Connect(function()
 		Server._setPlayerPrimaryNetworkOwner(player)
-		serverOnStopConnection:Disconnect()
 	end)
 
 	task.spawn(function()
@@ -170,6 +170,8 @@ function Server.TemporarilyBlacklistPlayerFromBeingMonitored(player, value)
 		else
 			task.wait(value)
 		end
+
+		onStopConnection:Disconnect()
 
 		if playerProfile:IsDestroyed() or Server.IsStopped() then
 			return nil
@@ -294,10 +296,6 @@ function Server.BlacklistNoClipMonitoringParts(parts)
 	)
 
 	for _, part in ipairs(parts) do
-		if not part:IsA("BasePart") then
-			continue
-		end
-
 		CollectionService:AddTag(part, SharedConstants.Tags.NoClipBlackListed)
 	end
 
@@ -316,10 +314,6 @@ function Server.UnBlacklistNoClipMonitoringParts(parts)
 	)
 
 	for _, part in ipairs(parts) do
-		if not part:IsA("BasePart") then
-			continue
-		end
-
 		CollectionService:RemoveTag(part, SharedConstants.Tags.NoClipBlackListed)
 	end
 
@@ -330,8 +324,6 @@ function Server.Start()
 	assert(not Server.IsStopped(), "Can't start Octagon as Octagon is stopped")
 	assert(not Server.IsStarted(), "Can't start Octagon as Octagon is already started")
 
-	local PlayerProfile = require(PlayerProfileService.PlayerProfile)
-
 	Server._isStarted = true
 	Server._init()
 
@@ -339,6 +331,8 @@ function Server.Start()
 
 	do
 		local function PlayerAdded(player)
+			-- Do not create a player profile if there are no detections available
+			-- or if the player is black listed from being monitored:
 			if not Server._shouldMonitorPlayer(player) then
 				table.insert(Server.BlacklistedPlayers, player)
 				return nil
@@ -460,6 +454,7 @@ function Server._cleanup()
 	end
 
 	PlayerProfileService.DestroyLoadedPlayerProfiles()
+	PlayerProfileService.Cleanup()
 	Server._cleanupDetections()
 	DestroyAllMaids(Server)
 
@@ -469,6 +464,7 @@ end
 function Server._init()
 	Server._initDetections()
 	Server._initSignals()
+	PlayerProfileService.Init()
 
 	return nil
 end
@@ -493,7 +489,7 @@ function Server._initSignals()
 			Server._heartBeatScriptConnection
 			and Server._heartBeatScriptConnection.Connected
 		then
-			return nil
+			return
 		end
 
 		Server._heartBeatScriptConnection = Server._startHeartBeatUpdate()
@@ -503,9 +499,9 @@ function Server._initSignals()
 		Server.MonitoringPlayerProfiles[player] = nil
 
 		if Server.AreMonitoringPlayerProfilesLeft() then
-			return nil
+			return
 		end
-		
+
 		if
 			Server._heartBeatScriptConnection and Server._heartBeatScriptConnection.Connected
 		then
@@ -624,7 +620,7 @@ function Server._setPlayerPrimaryNetworkOwner(player)
 		return nil
 	end
 
-	Util.SetBasePartNetworkOwner(player.Character.PrimaryPart, player)
+	Util.SetBasePartNetworkOwner(primaryPart, player)
 
 	return nil
 end
