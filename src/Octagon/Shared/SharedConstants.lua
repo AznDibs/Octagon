@@ -4,7 +4,7 @@
 
 return {
 	Tags = {
-		NoClipBlackListed = "NoClipBlackListed",
+		NoClipBlackListed = ("%s_NoClipBlackListed"),
 		PrimaryPart = "PrimaryPart",
 	},
 
