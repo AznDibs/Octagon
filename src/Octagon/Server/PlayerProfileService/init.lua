@@ -73,7 +73,11 @@ function PlayerProfileService.GetPlayerProfile(player)
 
 	if playerProfile then
 		return playerProfile
-	elseif not table.find(PlayerProfileService._destroyedPlayerProfiles, player.UserId) then
+	elseif
+		not table.find(PlayerProfileService._destroyedPlayerProfiles, player.UserId)
+		and PlayerProfileService._isInit
+		and Util.IsPlayerSubjectToBeMonitored(player)
+	then
 		return PlayerProfileService._waitForPlayerProfile(player)
 	end
 
@@ -81,13 +85,6 @@ function PlayerProfileService.GetPlayerProfile(player)
 end
 
 function PlayerProfileService._waitForPlayerProfile(player)
-	-- If this module wasn't initialized or if the player isn't being
-	-- monitored (which means no profile for that player), then we know it's not safe to      yield for a profile
-	-- based on implementation:
-	if not PlayerProfileService._isInit or not Util.IsPlayerSubjectToBeMonitored(player) then
-		return nil
-	end
-
 	local onPlayerProfileLoaded = Signal.new()
 
 	local onPlayerProfileLoadedConnection = nil
