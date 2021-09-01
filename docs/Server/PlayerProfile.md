@@ -142,9 +142,6 @@ Decrements the threshold for `physicsThreshold` by `thresholdDecrement`.
     If decrementing physics threshold values such that they are to be a value <= `0`, they will be clamped to `0`.
 
     ```lua
-    PlayerProfile:IncrementPhysicsThreshold("VerticalSpeed", 500)
-    print(PlayerProfile:GetPhysicsThresholdIncrement("VerticalSpeed")) --> 500
-    PlayerProfile:DecrementPhysicsThreshold("VerticalSpeed", 500)
     print(PlayerProfile:GetPhysicsThresholdIncrement("VerticalSpeed")) --> 0
     PlayerProfile:DecrementPhysicsThreshold("VerticalSpeed", 500)
     print(PlayerProfile:GetPhysicsThresholdIncrement("VerticalSpeed")) --> 0
