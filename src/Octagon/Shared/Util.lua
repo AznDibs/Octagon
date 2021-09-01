@@ -202,11 +202,11 @@ function Util.IsInstanceDestroyed(instance)
 		)
 	)
 
-	local _, response = pcall(function()
+	local wasSuccessFull, response = pcall(function()
 		instance.Parent = instance
 	end)
 
-	return response:match("locked") ~= nil
+	return not wasSuccessFull and response:match("locked") ~= nil
 end
 
 return Util
