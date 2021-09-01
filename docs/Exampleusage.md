@@ -1,6 +1,3 @@
-## Example usage
-
-
 ### Server
 
 Here's some serverside code which starts up Octagon and  listens to a player’s physics detection flags:
