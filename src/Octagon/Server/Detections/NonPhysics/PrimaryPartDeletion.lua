@@ -15,7 +15,7 @@ local PrimaryPartDeletion = {
 }
 
 local CollectionService = game:GetService("CollectionService")
-  
+
 local Shared = script:FindFirstAncestor("Octagon").Shared
 local SharedConstants = require(Shared.SharedConstants)
 local Util = require(Shared.Util)
@@ -23,7 +23,7 @@ local Signal = require(Shared.Signal)
 local Maid = require(Shared.Maid)
 local InitMaidFor = require(Shared.InitMaidFor)
 local DestroyAllMaids = require(Shared.DestroyAllMaids)
-   
+
 PrimaryPartDeletion._onPlayerDetection = Signal.new()
 PrimaryPartDeletion._maid = Maid.new()
 
@@ -35,25 +35,29 @@ end
 
 function PrimaryPartDeletion.Start(playerProfile)
 	local player = playerProfile.Player
+	local primaryPartParentChangedConnection = nil
+	primaryPartParentChangedConnection = player.Character.PrimaryPart.ChildRemoved:Connect(
+		function() end
+	)
 
 	local childRemovingConnection = player.Character.ChildRemoved:Connect(function(child)
-		if
-			not CollectionService:HasTag(child, SharedConstants.Tags.PrimaryPart)
-			or Util.IsInstanceDestroyed(child)
-			or Util.HasBasePartFallenToVoid(child)
-		then
-			return
-		end
+		task.defer(function()
+			if
+				not CollectionService:HasTag(child, SharedConstants.Tags.PrimaryPart)
+				or not primaryPartParentChangedConnection.Connected
+				or Util.HasBasePartFallenToVoid(child)
+			then
+				return
+			end
 
-		PrimaryPartDeletion._onPlayerDetection:Fire(playerProfile)
+			PrimaryPartDeletion._onPlayerDetection:Fire(playerProfile)
+		end)
 	end)
 
 	PrimaryPartDeletion._maid:AddTask(childRemovingConnection)
+	PrimaryPartDeletion._maid:AddTask(primaryPartParentChangedConnection)
 	playerProfile.DetectionMaid:AddTask(childRemovingConnection)
-
-	if not player.Character.PrimaryPart then
-		PrimaryPartDeletion._onPlayerDetection:Fire(playerProfile)
-	end
+	playerProfile.DetectionMaid:AddTask(primaryPartParentChangedConnection)
 
 	return nil
 end
