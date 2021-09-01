@@ -16,15 +16,17 @@
 local PlayerProfileService = {
 	LoadedPlayerProfiles = {},
 	_areModulesInit = false,
+	_isInit = false,
 	_destroyedPlayerProfiles = {},
 }
 
-local Shared = script:FindFirstAncestor("Octagon").Shared
-local Signal = require(Shared.Signal)
-local SharedConstants = require(Shared.SharedConstants)
-local Maid = require(Shared.Maid)
-local InitMaidFor = require(Shared.InitMaidFor)
-local DestroyAllMaids = require(Shared.DestroyAllMaids)
+local Octagon = script:FindFirstAncestor("Octagon")
+local Signal = require(Octagon.Shared.Signal)
+local SharedConstants = require(Octagon.Shared.SharedConstants)
+local Maid = require(Octagon.Shared.Maid)
+local Util = require(Octagon.Shared.Util)
+local InitMaidFor = require(Octagon.Shared.InitMaidFor)
+local DestroyAllMaids = require(Octagon.Shared.DestroyAllMaids)
 
 PlayerProfileService.OnPlayerProfileLoaded = Signal.new()
 PlayerProfileService.OnPlayerProfileDestroyed = Signal.new()
@@ -40,10 +42,11 @@ function PlayerProfileService.DestroyLoadedPlayerProfiles()
 		playerProfile:Destroy()
 	end
 
-	return nil 
+	return nil
 end
 
 function PlayerProfileService.Init()
+	PlayerProfileService._isInit = true
 	PlayerProfileService._initSignals()
 
 	return nil
@@ -61,17 +64,16 @@ function PlayerProfileService.GetPlayerProfile(player)
 		SharedConstants.ErrorMessages.InvalidArgument:format(
 			1,
 			"PlayerProfileService.GetPlayerProfile()",
-			"a Player object",
+			"Player",
 			typeof(player)
 		)
 	)
 
 	local playerProfile = PlayerProfileService.LoadedPlayerProfiles[player]
-	
+
 	if playerProfile then
 		return playerProfile
-	elseif not table.find(PlayerProfileService._destroyedPlayerProfiles, player.UserId)
-	then
+	elseif not table.find(PlayerProfileService._destroyedPlayerProfiles, player.UserId) then
 		return PlayerProfileService._waitForPlayerProfile(player)
 	end
 
@@ -79,9 +81,10 @@ function PlayerProfileService.GetPlayerProfile(player)
 end
 
 function PlayerProfileService._waitForPlayerProfile(player)
-	local Server = require(script.Parent)
-
-	if not Server.IsPlayerSubjectToBeMonitored(player) or not Server.IsStarted() then
+	-- If this module wasn't initialized or if the player isn't being
+	-- monitored (which means no profile for that player), then we know it's not safe to      yield for a profile
+	-- based on implementation:
+	if not PlayerProfileService._isInit or not Util.IsPlayerSubjectToBeMonitored(player) then
 		return nil
 	end
 
@@ -114,7 +117,7 @@ function PlayerProfileService._initSignals()
 	PlayerProfileService.OnPlayerProfileLoaded:Connect(function(playerProfile)
 		PlayerProfileService.LoadedPlayerProfiles[playerProfile.Player] = playerProfile
 	end)
- 
+
 	PlayerProfileService.OnPlayerProfileDestroyed:Connect(function(player)
 		table.insert(PlayerProfileService._destroyedPlayerProfiles, player.UserId)
 		PlayerProfileService.LoadedPlayerProfiles[player] = nil
