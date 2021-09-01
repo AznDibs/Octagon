@@ -22,7 +22,7 @@ nav:
   - Home: index.md
   - Tutorial: 
         - Setting up: Settingup.md
-        - Basic usage: Basicusage.md
+        - Example usage: Exampleusage.md
         - Blacklisting players from being monitored: Blacklistingplayersfrombeingmonitored.md
         - Detections: Detections.md
         - Trouble shooting: Troubleshooting.md

@@ -55,13 +55,13 @@ Octagon.IsStopped() --> boolean [IsStopped]
 
 Returns a boolean indicating if Octagon is stopped.
 
-### `Octagon.BlacklistNoClipMonitoringParts()`
+### `Octagon.BlacklistNoClipMonitoringPartsForPlayer()`
 ```lua
-Octagon.BlacklistNoClipMonitoringParts(parts : table) --> nil []
+Octagon.BlacklistNoClipMonitoringParts(player : Player, parts : table) --> nil []
 ```
 
-Iterates through `parts` and adds a noclip black listed tag to each instance found which will allow players to pass
-through those parts even if their property `CanCollide` isn't set to `true` on the server.
+Iterates through `parts` and adds a noclip black listed tag to each instance found which will allow `player` to pass
+through those parts even if their property `CanCollide` isn't set to `false` on the server. This method is useful when you want to allow specific players to pass through collideable parts.
 
 ### `Octagon.UnBlacklistNoClipMonitoringParts()`
 ```lua
