@@ -118,7 +118,6 @@ end
 function Client._initModules()
 	Client._areModulesInit = true
 
-	script.Parent.UnitTests.Server:Destroy()
 	script.Parent.Server:Destroy()
 
 	for _, child in ipairs(script:GetChildren()) do
