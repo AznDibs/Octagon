@@ -326,16 +326,14 @@ end
 
 function PlayerProfile:_initPhysicsDetectionData(physicsDetections)
 	-- Setup detection data:
-	for detection, detectionModule in pairs(physicsDetections) do
-		local requiredDetectionModule = require(detectionModule)
-
+	for detection, module in pairs(physicsDetections) do
 		local physicsData = {
 			LastCFrame = nil,
 			RaycastParams = nil,
 		}
-
-		-- Setup ray cast params for no clip detection:
-		if detection == "NoClip" then
+ 
+		if module == physicsDetections.NoClip then
+			-- Setup ray cast params for no clip detection:
 			local rayCastParams = RaycastParams.new()
 			rayCastParams.FilterDescendantsInstances = { self.Player.Character }
 			rayCastParams.IgnoreWater = true
@@ -369,7 +367,6 @@ end
 function PlayerProfile:_initPhysicsThresholds(physicsDetections)
 	local player = self.Player
 	local humanoid = player.Character.Humanoid
-	local primaryPart = player.Character.PrimaryPart
 
 	for detection, _ in pairs(physicsDetections) do
 		self._physicsThresholdIncrements[detection] = self._physicsThresholdIncrements[detection]
